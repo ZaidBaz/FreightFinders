@@ -1,5 +1,5 @@
 # FreightFinders
-## By Pearl, Zaid, Zalissa, Nikita
+### By Pearl, Zaid, Zalissa, Nikita
 Hello Freight finders?
 
 
