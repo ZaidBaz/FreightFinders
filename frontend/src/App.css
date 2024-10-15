@@ -1,0 +1,404 @@
+/* Set up the grid layout */
+.container {
+  display: grid;
+  grid-template-columns: 200px 1fr 200px; /* Left Sidebar, Main Content, Right Sidebar */
+  grid-template-rows: auto 1fr; /* Header and content area */
+  grid-template-areas:
+    "header header header"
+    "left-sidebar main-content right-sidebar";
+  height: 100vh;
+}
+
+
+/* Header styling */
+.header {
+  grid-area: header;
+  display: flex;
+  justify-content: flex-start; /* Align to the left */
+  align-items: center;
+  background-color: #f0f0f0;
+  padding: 10px 20px;
+}
+
+.header-content {
+  text-align: left; /* Align text to the left */
+}
+
+.header-title {
+  font-size: 1.5rem;
+}
+
+.header-title-orange {
+  color: orange; /* Change this to your desired shade of orange */
+  font-weight: bold;
+}
+
+.header-title-black {
+  color: black; /* Change this if you want a different shade of black */
+  font-weight: bold;
+}
+
+.horizontal-line {
+  height: 2px;
+  background-color: #333;
+  width: 100%;
+  position: absolute;
+  top: 0;
+}
+
+/* Left Sidebar styling */
+.left-sidebar {
+  grid-area: left-sidebar;
+  background-color: #e0e0e0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 20px 0; /* Add space between sidebar items */
+  font-size: 1rem; /* Standard text size */
+  cursor: pointer;
+  color: black;
+}
+
+.sidebar-item.clicked {
+  color: orange; /* Title turns orange when clicked */
+}
+
+/* Manage Capacity, Trailer Rental with subtitle styling */
+.manage-capacity, .trailer-rental {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  color: black; /* Keep the same color and style as the main buttons */
+}
+
+.sidebar-subtitle {
+  font-size: 1rem; /* Match the main button size */
+
+}
+
+/* More button styling */
+.more-option {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+.more-icon {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 5px;
+  width: 24px; /* Width of the 3 circles */
+}
+
+.circle {
+  width: 5px;
+  height: 5px;
+  background-color: transparent;
+  border: 1px solid black;
+  border-radius: 50%;
+  margin: 2px;
+}
+
+/* Hover and Click Effects */
+.sidebar-item:hover, .sidebar-subtitle:hover {
+  background-color: #ccc;
+  padding-left: 5px;
+  transition: padding-left 0.3s ease;
+}
+
+.sidebar-item.active, .sidebar-item.clicked {
+  color: orange; /* Title turns orange when clicked */
+  border-bottom: 3px solid #ff6600;
+  font-weight: bold;
+}
+
+/* Right Sidebar styling */
+.right-sidebar {
+  grid-area: right-sidebar;
+  background-color: #f7f7f7;
+  padding: 20px;
+}
+
+.right-sidebar h2 {
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+}
+
+.right-sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.right-sidebar li {
+  margin: 10px 0;
+}
+
+/* Main Content styling */
+.main-content {
+  flex: 1; /* Ensure the main content takes available space */
+  display: flex; /* Enable Flexbox layout for alignment */
+  flex-direction: column; /* Stack children vertically */
+  padding: 05px; /* Add some padding */
+  max-width: 8200px; /* Set a maximum width */
+  margin: 0 auto; /* Center the main content */
+}
+
+.search-form {
+  display: flex; /* Use Flexbox for the form layout */
+  justify-content: space-between; /* Space between the left and right sections */
+}
+
+.form-left {
+  flex: 3; /* Allow more space for the left section */
+  margin-right: 20px; /* Add some space between left and right sections */
+}
+
+.form-right {
+  flex: 2; /* Make the right section take less space */
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px; /* Spacing between the input groups */
+}
+
+.input-group label {
+  flex: 0 0 150px; /* Adjust this width as needed */
+  margin-right: 10px; /* Space between label and input */
+}
+
+.input-group input {
+  flex: 1; /* Allow the input to take the remaining space */
+  margin-right: 10px; /* Add some space between input fields */
+}
+
+.miles-section {
+  display: flex; /* Flexbox for miles inputs */
+  flex-direction: column; /* Stack them vertically */
+  margin-top: 5px; /* Space above the miles section */
+
+}
+
+.miles-inputs {
+  display: flex; /* Use Flexbox for miles inputs */
+  justify-content: space-between; /* Space between min and max inputs */
+}
+
+.miles-inputs div {
+  flex: 1; /* Make each input take equal space */
+  margin-right: 05px; /* Space between inputs */
+}
+
+.form-bottom {
+  display: flex; /* Align buttons in a row */
+  justify-content: space-between; /* Space out the buttons */
+}
+
+/* Horizontal Sidebar (Navigation Buttons) styling */
+.horizontal-sidebar {
+  display: flex;
+  justify-content: center; /* Center the sidebar */
+  background-color: #f4f4f4;
+  padding: 10px;
+  border-bottom: 2px solid #ccc;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.horizontal-btn {
+  flex: 1; /* Make each button take up an equal amount of space */
+  background-color: transparent;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 10px;
+  text-align: center;
+  margin: 0 10px; /* Add margin between buttons */
+  transition: background-color 0.3s ease, color 0.3s ease;
+  border-radius: 4px;
+}
+
+.horizontal-btn.active {
+  border-bottom: 3px solid #ff6600; /* Orange highlight for active section */
+  font-weight: bold;
+}
+
+.horizontal-btn:hover {
+  background-color: #ff6600;
+  color: white;
+}
+
+/* Search Form styling */
+.search-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
+  width: 60%;
+  background-color: #f9f9f9;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px; /* Rounded corners for the form */
+  margin: 0 auto; /* Center the search form */
+}
+
+.form-left, .form-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.miles-section {
+  grid-column: span 2; /* Span across both columns */
+  text-align: center; /* Center the title */
+}
+
+.miles-inputs {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Label styling */
+.form-label {
+  font-weight: bold;
+  color: black;
+}
+
+/* Checkbox styling */
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
+}
+
+input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+input, select {
+  padding: 8px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.form-bottom {
+  grid-column: span 2;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.search-btn {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.search-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Responsive styling for smaller screens */
+@media (max-width: 768px) {
+  .container {
+    grid-template-columns: 1fr; /* Stack columns vertically */
+    grid-template-areas:
+      "header"
+      "main-content"
+      "left-sidebar"
+      "right-sidebar";
+  }
+
+  .search-form {
+    grid-template-columns: 1fr; /* Make the form single column */
+    width: 90%; /* Increase width for mobile */
+  }
+
+  .horizontal-sidebar {
+    width: 90%; /* Adjust horizontal sidebar width */
+  }
+
+  .left-sidebar, .right-sidebar {
+    padding: 10px; /* Reduce padding on mobile */
+  }
+}
+
+.form-bottom {
+  grid-column: span 2;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.clear-btn {
+  padding: 10px 20px;
+  background-color: #f0f0f0;
+  color: black;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px; /* Space between buttons */
+}
+
+.favorite-btn {
+  padding: 10px 20px;
+  background-color: #f0f0f0;
+  color: black;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px; /* Space between buttons */
+}
+
+.search-btn {
+  padding: 10px 20px;
+  background-color: orange; /* Set background to orange */
+  color: white; /* Set text color to white */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.search-btn:hover {
+  background-color: darkorange; /* Darker shade on hover */
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px; /* Spacing between the input groups */
+}
+
+.input-group label {
+  flex: 0 0 150px; /* Adjust this width as needed */
+  margin-right: 10px; /* Space between label and input */
+}
+
+.input-group input {
+  flex: 1; /* Allow the input to take the remaining space */
+  margin-right: 10px; /* Add some space between input fields */
+}
+
+.miles-section h2 {
+  font-size: 1.5rem; /* Adjust the size to match "Capacity Type" */
+  font-weight: bold; /* Make the text bold for consistency */
+  color: black; /* Keep the same color if needed */
+}
