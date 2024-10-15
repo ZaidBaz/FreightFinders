@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -68,3 +69,10 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+=======
+# FreightFinders
+### By Pearl, Zaid, Zalissa, Nikita
+Hello Freight finders?
+Hello everyone we are Team 1 of Schneider, working on optimizing the UX of their current Search Engine!
+Hello - Zaid
+>>>>>>> 1e5c877fc6214e5e090cb6ce3777f4408a7cb6d5
