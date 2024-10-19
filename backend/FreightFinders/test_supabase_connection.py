@@ -9,8 +9,8 @@ key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im56
 supabase = create_client(url, key)
 
 # Fetch 10 records from the "load_posting" table
-response = supabase.table("load_posting").select("*").limit(10).execute()
-#response = supabase.table("load_stop").select("*").limit(2).execute()
+#response = supabase.table("load_posting").select("*").limit(10).execute()
+response = supabase.table("load_stop").select("*").limit(10).execute()
 
 # Print the result
 print(response)
