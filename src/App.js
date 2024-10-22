@@ -78,13 +78,31 @@ const LoadSearch = () => {
 
       {/* Right Sidebar Section */}
       <aside className="right-sidebar">
-        <h2>Top Recommendations</h2>
-        <ul>
-          <li>Recommendation 1</li>
-          <li>Recommendation 2</li>
-          <li>Recommendation 3</li>
-        </ul>
+        <h2 className="right-sidebar-title">Top Recommendations</h2>
+        <div className="right-sidebar-content">
+          <div className="recommendation-box">
+            <strong>From GREEN-BAY, WI</strong>
+            <p>Nov 22 6:00am - 7:30am</p>
+            <p>Drop Empty Trailer</p>
+            <p>Pick Up Loaded Trailer</p>
+            <div className="spacer"></div> {/* Space between sections */}
+            <strong>To MADISON, WI</strong>
+            <p>Dec 22 9:30am - 11:30am</p>
+            <p>Drop Loaded Trailer</p>
+            <p>Pick Up Empty Trailer</p>
+            <button className="contact-button">Contact to Book</button>
+          </div>
+          <div className="recommendation-box">
+            <strong>From CHICAGO, IL</strong>
+            <div className="spacer"></div>
+            <strong>To GLENVIEW, IL</strong>
+            <button className="contact-button">More Details</button>
+          </div>
+        </div>
       </aside>
+
+
+
 
       {/* Main Content Section */}
       <main className="main-content">
