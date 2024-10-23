@@ -29,12 +29,12 @@
 }
 
 .header-title-orange {
-  color: orange; /* Change this to your desired shade of orange */
+  color: orange;
   font-weight: bold;
 }
 
 .header-title-black {
-  color: black; /* Change this if you want a different shade of black */
+  color: black;
   font-weight: bold;
 }
 
@@ -125,27 +125,58 @@
   padding: 20px;
 }
 
-.right-sidebar h2 {
+.right-sidebar {
+  display: flex;
+  flex-direction: column; /* Stack title and content vertically */
+  height: 100%;
+}
+
+.right-sidebar-title {
   font-size: 1.4rem;
-  margin-bottom: 10px;
+  font-weight: bold; /* Makes the text bold */
+  margin-bottom: 10px; /* Space below the title */
 }
 
-.right-sidebar ul {
-  list-style: none;
-  padding: 0;
+.right-sidebar-content {
+  flex: 1; /* Take remaining space */
+  display: flex; /* Flexbox to align content */
+  flex-direction: column; /* Stack content vertically */
+}
+.recommendation-box {
+  background-color: #f0f0f0; /* Background color for the boxes */
+  border: 1px solid #ccc; /* Border color */
+  border-radius: 4px;
+  padding: 10px;
+  margin: 5px 0;
+  flex: 1;
 }
 
-.right-sidebar li {
-  margin: 10px 0;
+.spacer {
+  height: 15px;
+}
+
+.contact-button {
+  background-color: orange; /* Button color */
+  border: none; /* Remove border */
+  border-radius: 4px; /* Rounded corners */
+  color: white; /* Text color */
+  padding: 10px 15px; /* Padding inside the button */
+  cursor: pointer; /* Pointer cursor on hover */
+  margin-top: 10px; /* Space above the button */
+  width: 100%; /* Full width of the box */
+}
+
+.contact-button:hover {
+  background-color: darkorange; /* Darker color on hover */
 }
 
 /* Main Content styling */
 .main-content {
-  flex: 1; /* Ensure the main content takes available space */
+  flex: 1;
   display: flex; /* Enable Flexbox layout for alignment */
   flex-direction: column; /* Stack children vertically */
   padding: 05px; /* Add some padding */
-  max-width: 8200px; /* Set a maximum width */
+  max-width: 8200px;
   margin: 0 auto; /* Center the main content */
 }
 
@@ -388,8 +419,15 @@ input, select {
 }
 
 .input-group label {
-  flex: 0 0 150px; /* Adjust this width as needed */
-  margin-right: 10px; /* Space between label and input */
+  flex: 0 0 150px;
+  margin-right: 10px;
+}
+input[type="date"] {
+    padding: 8px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex: 1;
 }
 
 .input-group input {
