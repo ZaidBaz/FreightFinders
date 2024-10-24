@@ -4,7 +4,9 @@ import './App.css'; // Import the CSS for styling
 const LoadSearch = () => {
   // State to manage selected capacity types
   const [selectedCapacity, setSelectedCapacity] = useState([]);
-  // State to track the active section (New Search, Recent Search, etc.)
+  // State to manage dropdown visibility (fixing 'dropdownOpen' and 'setDropdownOpen')
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  // State to track the active section (New Search, Recent Search...)
   const [activeSection, setActiveSection] = useState('New Search');
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
@@ -12,6 +14,13 @@ const LoadSearch = () => {
   const [dropoffDate, setDropoffDate] = useState(''); // New state for drop-off date
   const [minMiles, setMinMiles] = useState('');
   const [maxMiles, setMaxMiles] = useState('');
+  // State to hold backend results
+  const [results, setResults] = useState([]);
+
+  // Dropdown visibility
+    const toggleDropdown = () => {
+      setDropdownOpen(!dropdownOpen);
+    };
 
   const handleCapacityChange = (event) => {
     const value = event.target.value;
@@ -25,6 +34,7 @@ const LoadSearch = () => {
     setActiveSection(section);
   };
 
+//Handle clear button
   const handleClear = () => {
     setSelectedCapacity([]);
     setOrigin('');
@@ -34,6 +44,41 @@ const LoadSearch = () => {
     setMinMiles('');
     setMaxMiles('');
   };
+
+  //Handle Search Button
+  const handleSearch = async (event) => {
+  // Prevent form from refreshing the page
+      event.preventDefault();
+      // Create an object with all users inputs
+      const searchData = {
+        capacity_types: selectedCapacity,
+        origin,
+        destination,
+        pickup_date: pickupDate,
+        dropoff_date: dropoffDate,
+        min_miles: minMiles,
+        max_miles: maxMiles,
+      };
+
+
+      try {
+            // Send data to the backend (Django)
+            const response = await fetch('http://our-backend-url/api/search', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(searchData),
+            });
+
+            const result = await response.json();
+            setResults(result); // Set the search results from backend response
+          } catch (error) {
+            console.error('Errors during search from Backend:', error);
+          }
+        };
+
+
 
   return (
     <div className="container">
@@ -51,10 +96,7 @@ const LoadSearch = () => {
 
       {/* Left Sidebar Section */}
       <aside className="left-sidebar">
-        <div className="sidebar-item">
-          <img src="house-drawing.png" className="sidebar-icon" alt="Home Icon" />
-          <span></span>
-        </div>
+        <div className="sidebar-item"><span>Home</span></div>
         <div className="sidebar-item"><span>Search</span></div>
         <div className="sidebar-item"><span>My Loads</span></div>
         <div className="sidebar-item manage-capacity">
@@ -136,63 +178,79 @@ const LoadSearch = () => {
 
         {/* Conditionally render based on the active section */}
         {activeSection === 'New Search' && (
-          <div>
-            <form className="search-form">
-              <div className="form-left">
-                <label htmlFor="capacity-type" className="form-label">Capacity Type</label>
-                <div className="checkbox-group">
-                  {['power-only', 'dry-van', 'dray', 'refrigerated', 'specialty'].map((capacity) => (
-                    <div key={capacity} className="checkbox-item">
-                      <input
-                        type="checkbox"
-                        id={capacity}
-                        value={capacity}
-                        onChange={handleCapacityChange}
-                        checked={selectedCapacity.includes(capacity)}
-                      />
-                      <label htmlFor={capacity}>{capacity.replace('-', ' ').toUpperCase()}</label>
-                    </div>
-                  ))}
-                </div>
+                  <div>
+                    <form className="search-form" onSubmit={handleSearch}>
+                      {/* Capacity Type Dropdown */}
+                      <label htmlFor="capacity-type" className="form-label">Capacity Type</label>
+                      <div className="dropdown-container">
+                        <button type="button" onClick={toggleDropdown} className="dropdown-toggle">
+                          Select Capacity Type
+                        </button>
+                        {dropdownOpen && (
+                          <div className="dropdown-content">
+                            {['power-only', 'dry-van', 'dray', 'refrigerated', 'specialty'].map((capacity) => (
+                              <div key={capacity} className="checkbox-item">
+                                <input
+                                  type="checkbox"
+                                  id={capacity}
+                                  value={capacity}
+                                  onChange={handleCapacityChange}
+                                  checked={selectedCapacity.includes(capacity)}
+                                />
+                                <label htmlFor={capacity}>{capacity.replace('-', ' ').toUpperCase()}</label>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
 
                 {/* Origin and Pickup Date Group */}
                 <div className="input-group">
-                  <label htmlFor="origin" className="form-label">Origin</label>
-                  <input
-                    type="text"
-                    id="origin"
-                    placeholder="Enter origin"
-                    value={origin}
-                    onChange={(e) => setOrigin(e.target.value)}
-                  />
-                  <label htmlFor="pickup-date" className="form-label">Pickup Date</label>
-                  <input
-                    type="date"
-                    id="pickup-date"
-                    value={pickupDate}
-                    onChange={(e) => setPickupDate(e.target.value)}
-                  />
-                </div>
+                   <div className="input-row">
+                     <label htmlFor="origin" className="form-label">Origin</label>
+                     <input
+                       type="text"
+                       id="origin"
+                       placeholder="origin"
+                       value={origin}
+                       onChange={(e) => setOrigin(e.target.value)}
+                     />
+                   </div>
+                   <div className="input-row">
+                     <label htmlFor="pickup-date" className="form-label">Pickup Date</label>
+                     <input
+                       type="date"
+                       id="pickup-date"
+                       value={pickupDate}
+                       onChange={(e) => setPickupDate(e.target.value)}
+                     />
+                   </div>
+                 </div>
 
                 {/* Destination and Drop-off Date Group */}
                 <div className="input-group">
-                  <label htmlFor="destination" className="form-label">Destination</label>
-                  <input
-                    type="text"
-                    id="destination"
-                    placeholder="Enter destination"
-                    value={destination}
-                    onChange={(e) => setDestination(e.target.value)}
-                  />
-                  <label htmlFor="dropoff-date" className="form-label">Drop-off Date</label>
-                  <input
-                    type="date"
-                    id="dropoff-date"
-                    value={dropoffDate}
-                    onChange={(e) => setDropoffDate(e.target.value)}
-                  />
+                  <div className="input-row">
+                    <label htmlFor="destination" className="form-label">Destination</label>
+                    <input
+                      type="text"
+                      id="destination"
+                      placeholder="destination"
+                      value={destination}
+                      onChange={(e) => setDestination(e.target.value)}
+                    />
+                  </div>
+                  <div className="input-row">
+                    <label htmlFor="dropoff-date" className="form-label">Drop-off Date</label>
+                    <input
+                      type="date"
+                      id="dropoff-date"
+                      value={dropoffDate}
+                      onChange={(e) => setDropoffDate(e.target.value)}
+                    />
+                  </div>
                 </div>
-              </div>
+
+
 
               <div className="form-right">
                 <div className="miles-section">
@@ -266,6 +324,20 @@ const LoadSearch = () => {
             </ul>
           </div>
         )}
+
+        {results.length > 0 && (
+                      <div className="results-section">
+                        <h2>Search Results</h2>
+                        <ul>
+                          {results.map((result, index) => (
+                            <li key={index}>
+                              <strong>From {result.origin} to {result.destination}</strong>
+                              <p>{result.details}</p>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
       </main>
     </div>
   );

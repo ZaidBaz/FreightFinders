@@ -138,7 +138,7 @@
 }
 
 .right-sidebar-content {
-  flex: 1; /* Take remaining space */
+  flex: 3; /* Take remaining space */
   display: flex; /* Flexbox to align content */
   flex-direction: column; /* Stack content vertically */
 }
@@ -420,23 +420,52 @@ input, select {
 
 .input-group label {
   flex: 0 0 150px;
-  margin-right: 10px;
+  margin-right: 05px;
 }
 input[type="date"] {
     padding: 8px;
-    margin: 8px 0;
+    margin: 5px 0;
     border: 1px solid #ccc;
     border-radius: 4px;
     flex: 1;
 }
 
 .input-group input {
-  flex: 1; /* Allow the input to take the remaining space */
-  margin-right: 10px; /* Add some space between input fields */
+  flex: 1;
+  margin-right: 05px; /* Add some space between input fields */
+  margin-left: 0;
+  padding: 5px;
 }
 
 .miles-section h2 {
-  font-size: 1.5rem; /* Adjust the size to match "Capacity Type" */
-  font-weight: bold; /* Make the text bold for consistency */
-  color: black; /* Keep the same color if needed */
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: black;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.input-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 05px;
+}
+
+.form-label {
+  width: 30%;
+  margin-right: 2px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+input[type="text"],
+input[type="date"] {
+  width: 65%; /* Adjust width according to your design */
+  padding: 6px;
+  font-size: 14px;
 }
