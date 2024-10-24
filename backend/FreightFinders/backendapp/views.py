@@ -42,3 +42,32 @@ def search_locations(request):
     destination_data = destination_response.data
 
     return JsonResponse({'origin_results': origin_data, 'destination_results': destination_data}, safe=False)
+
+def multi_capacity_type(request):
+    multi_capacities = request.GET.get('transport_modes', '').lower()
+    capacity_list = multi_capacities.split(',')
+
+    supabase = get_supabase_client()
+
+    capacities_query = supabase.table('load_posting').select('*')
+    if multi_capacities:
+
+        if len(capacity_list) > 0:
+
+            for capacity in capacity_list:
+        
+                capacities_query = capacities_query.ilike('transport_mode', f'%{capacity}')
+
+    capacities_response = capacities_query.execute()
+
+    capacities_data = capacities_response.data
+
+    return JsonResponse(capacities_data, safe=False)
+
+
+def search_dates(request):
+
+    pass
+
+def home(request):
+    return JsonResponse("Welcome to the homepage!", safe = False)
