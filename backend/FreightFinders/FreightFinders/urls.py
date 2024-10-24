@@ -19,6 +19,9 @@ from django.urls import path
 from backendapp import views
 
 urlpatterns = [
+    path('', views.home, name='home'),
     path('admin/', admin.site.urls),
     path('search-locations/', views.search_locations, name='search_locations'),
+    path('multi-capacity-types/', views.multi_capacity_type, name = 'multi_capacity_types'),
+    path('search-dates', views.search_dates, name = 'search_dates')
 ]
