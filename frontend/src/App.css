@@ -1,9 +1,10 @@
 /* Set up the grid layout */
 .container {
+  font-family: Arial, sans-serif;
   overflow-x: hidden;
   width:100%;
   display: grid;
-  grid-template-columns: 200px 1fr 200px; /* Left Sidebar, Main Content, Right Sidebar */
+  grid-template-columns: 82px 1fr 200px; /* Left Sidebar, Main Content, Right Sidebar */
   grid-template-rows: auto 1fr; /* Header and content area */
   grid-template-areas:
     "header header header"
@@ -18,10 +19,11 @@
   display: flex;
   justify-content: flex-start; /* Align to the left */
   align-items: center;
-  background-color: #f0f0f0;
+  background-color: #ffffff;
   height: 1.5rem;
   padding: 0.7rem 0;
-}
+  /* box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);*/
+} 
 
 .header-content {
   text-align: left; /* Align text to the left */
@@ -53,7 +55,7 @@
 /* Left Sidebar styling */
 .left-sidebar {
   grid-area: left-sidebar;
-  background-color: #e0e0e0;
+  background-color: #ffffff;
   padding: 1rem;
   width: 3rem;
   display: flex;
@@ -126,7 +128,7 @@
 /* Right Sidebar styling */
 .right-sidebar {
   grid-area: right-sidebar;
-  background-color: #f7f7f7;
+  background-color: #E8E5E1;
   padding: 20px;
 }
 
@@ -178,6 +180,7 @@
 /* Main Content styling */
 .main-content {
   flex: 1;
+  background-color: #E8E5E1;
   display: flex; /* Enable Flexbox layout for alignment */
   flex-direction: column; /* Stack children vertically */
   padding: 05px; /* Add some padding */
@@ -241,9 +244,9 @@
 .horizontal-sidebar {
   display: flex;
   justify-content: center; /* Center the sidebar */
-  background-color: #f4f4f4;
+  background-color: #E8E5E1;
   padding: 10px;
-  border-bottom: 2px solid #ccc;
+  /* border-bottom: 2px solid #ccc; */
   margin-bottom: 20px;
   border-radius: 8px;
   width: 100%;
@@ -252,9 +255,9 @@
 
 .horizontal-btn {
   flex: 1; /* Make each button take up an equal amount of space */
-  background-color: transparent;
+  background-color: #CFCFCF;
   border: 1px solid #ccc;
-  font-size: 1rem;
+  font-size: 0.8rem;
   cursor: pointer;
   padding: 10px;
   text-align: center;
@@ -264,8 +267,9 @@
 }
 
 .horizontal-btn.active {
-  border-bottom: 3px solid #FF5C14; /* Orange highlight for active section */
+  border-left: 0.4rem solid #FF5C14; /* Orange highlight for active section */
   font-weight: bold;
+  background-color: white;
 }
 
 .horizontal-btn:hover {
