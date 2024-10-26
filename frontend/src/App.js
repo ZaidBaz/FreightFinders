@@ -99,14 +99,14 @@ const LoadSearch = () => {
         <div className="sidebar-item"><span>Home</span></div>
         <div className="sidebar-item"><span>Search</span></div>
         <div className="sidebar-item"><span>My Loads</span></div>
-        <div className="sidebar-item manage-capacity">
+        {/* <div className="sidebar-item manage-capacity">
           <span>Manage</span>
           <span className="sidebar-subtitle">Capacity</span>
-        </div>
+        </div> */}
         <div className="sidebar-item"><span>Fuel Savings</span></div>
         <div className="sidebar-item trailer-rental">
           <span>Trailer</span>
-          <span className="sidebar-subtitle">Rental</span>
+          <span className="sidebar-subtitle">Trailer Rental</span>
         </div>
         <div className="sidebar-item more-option">
           <span>More</span>
