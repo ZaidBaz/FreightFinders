@@ -1,0 +1,34 @@
+.sidebar {
+    position: fixed;
+    right: 0;
+    top: 0;
+    height: 100vh;
+    width: 200px;
+    background-color: #fff;
+    border-left: 1px solid #ccc;
+    padding-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+  
+  .sidebar-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .sidebar-item {
+    font-size: 1.2rem;
+    color: #333;
+    cursor: pointer;
+  }
+  
+  .sidebar-item .sidebar-icon {
+    color: #ff6600; /* Schneider's orange color */
+    margin-right: 0.5rem;
+  }
+  
