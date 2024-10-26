@@ -1,0 +1,76 @@
+/* RadiusSlider.css */
+
+.radius-slider-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  margin: 0 auto;
+}
+
+.radius-info {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.radius-value {
+  color: #f47329;
+  font-weight: bold;
+}
+
+.slider {
+  width: 100%;
+  margin: 20px 0;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  background: #ccc;
+  outline: none;
+  border-radius: 4px;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background-color: #f47329;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.slider-labels {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 12px;
+  color: #666;
+}
+
+.increment-decrement-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.increment-decrement-buttons button {
+  width: 30px;
+  height: 30px;
+  background-color: #f47329;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 5px 0;
+  border-radius: 4px;
+}
+
+.increment-decrement-buttons button:focus {
+  outline: none;
+}

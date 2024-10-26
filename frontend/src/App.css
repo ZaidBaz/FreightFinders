@@ -1,5 +1,7 @@
 /* Set up the grid layout */
 .container {
+  overflow-x: hidden;
+  width:100%;
   display: grid;
   grid-template-columns: 200px 1fr 200px; /* Left Sidebar, Main Content, Right Sidebar */
   grid-template-rows: auto 1fr; /* Header and content area */
@@ -17,7 +19,8 @@
   justify-content: flex-start; /* Align to the left */
   align-items: center;
   background-color: #f0f0f0;
-  padding: 10px 20px;
+  height: 1.5rem;
+  padding: 0.7rem 0;
 }
 
 .header-content {
@@ -25,16 +28,17 @@
 }
 
 .header-title {
-  font-size: 1.5rem;
+  font-size: 0.8rem;
+  margin-left: 10px;
 }
 
 .header-title-orange {
-  color: orange;
+  color: #FF5C14;
   font-weight: bold;
 }
 
 .header-title-black {
-  color: black;
+  color: #5A514D;
   font-weight: bold;
 }
 
@@ -50,7 +54,8 @@
 .left-sidebar {
   grid-area: left-sidebar;
   background-color: #e0e0e0;
-  padding: 20px;
+  padding: 1rem;
+  width: 3rem;
   display: flex;
   flex-direction: column;
 }
@@ -259,12 +264,12 @@
 }
 
 .horizontal-btn.active {
-  border-bottom: 3px solid #ff6600; /* Orange highlight for active section */
+  border-bottom: 3px solid #FF5C14; /* Orange highlight for active section */
   font-weight: bold;
 }
 
 .horizontal-btn:hover {
-  background-color: #ff6600;
+  background-color: #FF5C14;
   color: white;
 }
 
