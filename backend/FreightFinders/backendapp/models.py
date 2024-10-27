@@ -26,7 +26,7 @@ class LoadStop(models.Model):
         return f"LoadStop {self.stop_id} for Load {self.load_id}"
 
 class LoadPosting(models.Model):
-    id = models.BigAutoField(primary_key=True)  # Assuming 'id' is the primary key
+    id = models.BigAutoField    (primary_key=True)  # Assuming 'id' is the primary key
     load_id = models.CharField(max_length=255)
     posting_status = models.CharField(max_length=255)
     source_system = models.CharField(max_length=255)
