@@ -130,30 +130,25 @@ def search_dates(request):
     return common_load_ids
 
 def multi_capacity_type(request):
-
     multi_capacities = request.GET.get('transport_modes', '').lower()
 
-    if(multi_capacities == ''):
-
+    if multi_capacities == '':
         all_postings = LoadPosting.objects.all()
-
-        all_postings_data = list(all_postings.values())
-
-        return {item['load_id'] for item in all_postings_data}
+        all_postings_data = {item['load_id'] for item in all_postings.values('load_id')}
+        return all_postings_data
 
     capacity_list = multi_capacities.split(',')
 
     query = Q()
     for capacity in capacity_list:
+        
         query |= Q(transport_mode__iexact=capacity)
 
     capacities_query = LoadPosting.objects.filter(query)
 
-    capacities_data = set(capacities_query.values())
+    capacities_data = {item['load_id'] for item in capacities_query.values('load_id')}
 
-    capacities_load_ids = {item['load_id'] for item in capacities_data}
-
-    return capacities_load_ids
+    return capacities_data
 
 def filter_loads(request):
 
