@@ -1,4 +1,5 @@
 from logging import Logger
+import time
 from django.shortcuts import render
 from django.http import JsonResponse
 from .supabase_client import get_supabase_client
@@ -6,6 +7,8 @@ from datetime import datetime
 from .models import LoadStop
 from .models import LoadPosting
 from django.db.models import Max, OuterRef, Subquery, F, Q
+from django.db import connection
+from concurrent.futures import ThreadPoolExecutor
 
 def search_locations(request):
     # Get origin input
@@ -55,8 +58,16 @@ def search_locations(request):
     origin_data = list(origin_query.values())
     destination_data = list(destination_query.values())
 
+    origin_load_ids = {item['load_id'] for item in origin_data}
+    destination_load_ids = {item['load_id'] for item in destination_data}
+
+    # Find common load_ids
+    common_load_ids = origin_load_ids.intersection(destination_load_ids)
     # Return the result as JSON
-    return JsonResponse({'origin_results': origin_data, 'destination_results': destination_data}, safe=False)
+
+    # print('search-locations: ', common_load_ids)
+
+    return common_load_ids
 
 
 def search_dates(request):
@@ -109,23 +120,71 @@ def search_dates(request):
     origin_dates_data = list(origin_dates_query.values())
     destination_dates_data = list(destination_dates_query.values())
 
-    return JsonResponse({'origin_dates': origin_dates_data, 'destination_dates': destination_dates_data}, safe=False)
+    origin_load_ids = {item['load_id'] for item in origin_dates_data}
+    destination_load_ids = {item['load_id'] for item in destination_dates_data}
+
+    # Find common load_ids
+    common_load_ids = origin_load_ids.intersection(destination_load_ids)
+
+
+    return common_load_ids
 
 def multi_capacity_type(request):
 
     multi_capacities = request.GET.get('transport_modes', '').lower()
+
+    if(multi_capacities == ''):
+
+        all_postings = LoadPosting.objects.all()
+
+        all_postings_data = list(all_postings.values())
+
+        return {item['load_id'] for item in all_postings_data}
+
     capacity_list = multi_capacities.split(',')
 
     query = Q()
     for capacity in capacity_list:
         query |= Q(transport_mode__iexact=capacity)
 
-    # Apply the combined Q object to filter LoadPosting records
     capacities_query = LoadPosting.objects.filter(query)
 
-    capacities_data = list(capacities_query.values())
+    capacities_data = set(capacities_query.values())
 
-    return JsonResponse(capacities_data, safe=False)
+    capacities_load_ids = {item['load_id'] for item in capacities_data}
+
+    return capacities_load_ids
+
+def filter_loads(request):
+
+    def get_load_ids_locations():
+        return search_locations(request)
+    
+    def get_load_ids_dates():
+        return search_dates(request)
+    
+    def get_load_ids_capacity_types():
+        return multi_capacity_type(request)
+
+    # Execute functions in parallel
+    with ThreadPoolExecutor() as executor:
+        # Submit tasks to the executor
+        future_locations = executor.submit(get_load_ids_locations)
+        future_dates = executor.submit(get_load_ids_dates)
+        future_capacity_types = executor.submit(get_load_ids_capacity_types)
+
+        # Retrieve results
+        load_ids_locations = future_locations.result()
+        load_ids_dates = future_dates.result()
+        load_ids_capacity_types = future_capacity_types.result()
+
+    load_ids_locations_dates = load_ids_locations.intersection(load_ids_dates)
+
+    all_load_ids = load_ids_capacity_types.intersection(load_ids_locations_dates)
+
+    return JsonResponse(list(all_load_ids), safe = False )
+
+    # multi_capacity_type
 
 def home(request):
     return JsonResponse("Welcome to the homepage!", safe = False)
