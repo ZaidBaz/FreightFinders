@@ -90,6 +90,26 @@ def search_dates(request):
             appointment_to__gte=start_date_earliest,
             appointment_from__lte=start_date_latest
         )
+
+    elif(start_date_earliest):
+
+        start_date_earliest = datetime.strptime(start_date_earliest, '%Y-%m-%d')
+
+        origin_dates_query = LoadStop.objects.filter(
+            stop_sequence=1,
+            appointment_to__gte=start_date_earliest
+        )
+
+    elif(start_date_latest):
+
+        start_date_latest = datetime.strptime(start_date_latest, '%Y-%m-%d')
+        start_date_latest = start_date_latest.replace(hour = 23, minute = 59, second = 59)
+
+        origin_dates_query = LoadStop.objects.filter(
+            stop_sequence=1,
+            appointment_from__lte=start_date_latest
+        )
+
     
     max_sequence_subquery = (
         LoadStop.objects
@@ -117,6 +137,24 @@ def search_dates(request):
             appointment_to__gte=end_date_earliest,
             appointment_from__lte=end_date_latest
         )
+
+    elif(end_date_earliest):
+
+        end_date_earliest = datetime.strptime(end_date_earliest, '%Y-%m-%d')
+        destination_dates_query = LoadStop.objects.filter(
+            appointment_to__gte=end_date_earliest
+        )
+    
+    elif(end_date_latest):
+
+        end_date_latest = datetime.strptime(end_date_latest, '%Y-%m-%d')
+        end_date_latest = end_date_latest.replace(hour = 23, minute = 59, second = 59)
+
+        destination_dates_query = LoadStop.objects.filter(
+            appointment_from__lte=end_date_latest
+        )
+
+
 
     origin_dates_data = list(origin_dates_query.values())
     destination_dates_data = list(destination_dates_query.values())
