@@ -6,7 +6,7 @@ from .supabase_client import get_supabase_client
 from datetime import datetime
 from .models import LoadStop
 from .models import LoadPosting
-from django.db.models import Max, OuterRef, Subquery, F, Q
+from django.db.models import Max, OuterRef, Subquery, F, Q, Prefetch
 from django.db import connection
 from concurrent.futures import ThreadPoolExecutor
 
@@ -58,6 +58,7 @@ def search_locations(request):
     origin_data = list(origin_query.values())
     destination_data = list(destination_query.values())
 
+    # print(origin_data)
     origin_load_ids = {item['load_id'] for item in origin_data}
     destination_load_ids = {item['load_id'] for item in destination_data}
 
@@ -177,7 +178,46 @@ def filter_loads(request):
 
     all_load_ids = load_ids_capacity_types.intersection(load_ids_locations_dates)
 
-    return JsonResponse(list(all_load_ids), safe = False )
+    load_stops_prefetch = Prefetch(
+        'loadid_stops',
+        queryset= LoadStop.objects.filter(load_id__in=all_load_ids),
+        # queryset=LoadStop.objects.filter(load_id__in=all_load_ids).values(
+        #     'stop_sequence', 'stop_type', 'appointment_from', 'appointment_to', 'city', 'state', 'postal_code'
+        # ),
+        to_attr='stops'
+    )
+
+    load_postings = LoadPosting.objects.filter(load_id__in=all_load_ids).prefetch_related(load_stops_prefetch)
+    
+    # Prepare the response list
+    result = []
+
+    for load_posting in load_postings:
+        # Collect load stops from prefetch (no extra queries)
+        load_stops = [
+            {
+                'stop_sequence': stop.stop_sequence,
+                'stop_type': stop.stop_type,
+                'appointment_from': stop.appointment_from,
+                'appointment_to': stop.appointment_to,
+                'city': stop.city,
+                'state': stop.state,
+                'postal_code': stop.postal_code,
+            }
+            for stop in load_posting.stops  # Filtered fields
+        ]
+        # Create a dictionary for each load posting with nested load stops
+        result.append({
+            'load_id': load_posting.load_id,
+            'total_distance': load_posting.total_distance,
+            'distance_uom': load_posting.distance_uom,
+            'transport_mode': load_posting.transport_mode,
+            'total_weight': load_posting.total_weight,
+            'weight_uom': load_posting.weight_uom,
+            'load_stops': load_stops
+        })
+
+    return JsonResponse(result, safe = False )
 
     # multi_capacity_type
 
