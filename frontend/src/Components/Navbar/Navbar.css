@@ -1,0 +1,45 @@
+.navbar {
+  z-index: 1000; 
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Stronger shadow */
+  position: relative; /* Necessary for z-index */
+  display: flex;
+  height: 2.8rem;
+  justify-content: space-between;
+  align-items: center;
+    /* padding: 1rem; */
+  background-color: #fff;
+    /* border-bottom: 1px solid #ccc; */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+.navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .brand {
+    font-size: 0.9rem;
+    margin-left: 0.5rem;
+  }
+  
+  .brand-primary {
+    color: #f3601c; /* Schneider's orange color */
+    font-weight: bold;
+  }
+  
+  .brand-secondary {
+    color: #5A514D;
+  }
+  
+  .search-link {
+    font-size: 0.9rem;
+    color: #666;
+    text-decoration: none;
+  }
+  
+  .navbar-right {
+    font-size: 1rem;
+    color: #333;
+  }
+  
