@@ -1,211 +1,136 @@
 import React, { useState } from 'react';
-import './App.css'; // Import the CSS for styling
+import './App.css'; 
 
-const LoadSearch = () => {
-  // State to manage selected capacity types
-  const [selectedCapacity, setSelectedCapacity] = useState([]);
-  // State to manage dropdown visibility (fixing 'dropdownOpen' and 'setDropdownOpen')
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  // State to track the active section (New Search, Recent Search...)
-  const [activeSection, setActiveSection] = useState('New Search');
-  const [origin, setOrigin] = useState('');
-  const [destination, setDestination] = useState('');
-  const [pickupDate, setPickupDate] = useState(''); // New state for pickup date
-  const [dropoffDate, setDropoffDate] = useState(''); // New state for drop-off date
-  const [minMiles, setMinMiles] = useState('');
-  const [maxMiles, setMaxMiles] = useState('');
-  // State to hold backend results
-  const [results, setResults] = useState([]);
+import Navbar from './Components/Navbar/Navbar.js';
+import RadiusSlider from './Components/RadiusSlider/RadiusSlider.js'
+import Button from './Components/Button/Button.js';
+// import SearchButton from './Components/SearchButton/SearchButton.js';
+import LeftSidebar from './Components/LeftSidebar/LeftSidebar.js';
+import Dropdown from './Components/Dropdown/Dropdown.js'
+import Card from './Components/Card'; // Import the Card component
 
-  // Dropdown visibility
-    const toggleDropdown = () => {
-      setDropdownOpen(!dropdownOpen);
-    };
+const App = () => {
+  // State to toggle sidebar visibility
+  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
 
-  const handleCapacityChange = (event) => {
-    const value = event.target.value;
-    setSelectedCapacity((prev) =>
-      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
-    );
+  // State to track which button is active
+  const [activeButton, setActiveButton] = useState(null);
+
+  // State for tracking the selected menu item in the sidebar
+  const [selectedMenuItem, setSelectedMenuItem] = useState(null);
+
+  // Define other states that were missing
+  // const [selectedCapacity, setSelectedCapacity] = useState([]); // Ensure this is defined
+  const [origin, setOrigin] = useState(''); // Define the origin state
+  const [destination, setDestination] = useState(''); // Define the destination state
+  const [pickupDate, setPickupDate] = useState(''); // Define the pickup date state
+  const [dropoffDate, setDropoffDate] = useState(''); // Define the dropoff date state
+  const [minMiles, setMinMiles] = useState(''); // Define the min miles state
+  const [maxMiles, setMaxMiles] = useState(''); // Define the max miles state
+  // const [results, setResults] = useState([]); // Define results state
+
+  // Handler for toggling sidebar visibility
+  const toggleSidebar = () => {
+    setIsSidebarVisible((prevState) => !prevState);
   };
 
-  // Handle section change on horizontal navigation click
-  const handleSectionClick = (section) => {
-    setActiveSection(section);
+  // Handler to set the active button
+  const handleButtonClick = (buttonIndex) => {
+    setActiveButton(buttonIndex);
   };
 
-//Handle clear button
-  const handleClear = () => {
-    setSelectedCapacity([]);
-    setOrigin('');
-    setDestination('');
-    setPickupDate('');
-    setDropoffDate('');
-    setMinMiles('');
-    setMaxMiles('');
+  // const handleCapacityChange = (event) => {
+  //   const value = event.target.value;
+  //   setSelectedCapacity((prev) =>
+  //     prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value] // Corrected parentheses here
+  //   );
+  // };
+
+  // Handler for selecting a menu item in the sidebar
+  const handleMenuItemClick = (item) => {
+    setSelectedMenuItem(item);
   };
 
-  //Handle Search Button
-  const handleSearch = async (event) => {
-  // Prevent form from refreshing the page
-      event.preventDefault();
-      // Create an object with all users inputs
-      const searchData = {
-        capacity_types: selectedCapacity,
-        origin,
-        destination,
-        pickup_date: pickupDate,
-        dropoff_date: dropoffDate,
-        min_miles: minMiles,
-        max_miles: maxMiles,
-      };
+  // Handle clear button
+  // const handleClear = () => {
+  //   setSelectedCapacity([]);
+  //   setOrigin('');
+  //   setDestination('');
+  //   setPickupDate('');
+  //   setDropoffDate('');
+  //   setMinMiles('');
+  //   setMaxMiles('');
+  // };
 
+  // // Handle Search Button
+  // const handleSearch = async (event) => {
+  //   event.preventDefault();
+  //   const searchData = {
+  //     capacity_types: selectedCapacity,
+  //     origin,
+  //     destination,
+  //     pickup_date: pickupDate,
+  //     dropoff_date: dropoffDate,
+  //     min_miles: minMiles,
+  //     max_miles: maxMiles,
+  //   };
 
-      try {
-            // Send data to the backend (Django)
-            const response = await fetch('http://our-backend-url/api/search', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(searchData),
-            });
+  //   try {
+  //     const response = await fetch('http://our-backend-url/api/search', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(searchData),
+  //     });
+  //     const result = await response.json();
+  //     setResults(result); // Set the search results from backend response
+  //   } catch (error) {
+  //     console.error('Errors during search from Backend:', error);
+  //   }
+  // };
 
-            const result = await response.json();
-            setResults(result); // Set the search results from backend response
-          } catch (error) {
-            console.error('Errors during search from Backend:', error);
-          }
-        };
-
-
-
+  
+  
   return (
-    <div className="container">
-      {/* Header Section */}
-      <header className="header">
-        <div className="horizontal-line"></div>
-        <div className="header-content">
-          <h1 className="header-title">
-            <span className="header-title-orange">Schneider</span>
-            <br />
-            <span className="header-title-black">FreightPower</span>
-          </h1>
-        </div>
-      </header>
+    <div className="app">
+      {/* Navbar component with a toggle button */}
+      <Navbar toggleSidebar={toggleSidebar} />
 
-      {/* Left Sidebar Section */}
-      <aside className="left-sidebar">
-        <div className="sidebar-item"><span>Home</span></div>
-        <div className="sidebar-item"><span>Search</span></div>
-        <div className="sidebar-item"><span>My Loads</span></div>
-        {/* <div className="sidebar-item manage-capacity">
-          <span>Manage</span>
-          <span className="sidebar-subtitle">Capacity</span>
-        </div> */}
-        <div className="sidebar-item"><span>Fuel Savings</span></div>
-        <div className="sidebar-item trailer-rental">
-          <span>Trailer</span>
-          <span className="sidebar-subtitle">Trailer Rental</span>
+      {/* Main content with conditional Left Sidebar rendering */}
+      <div className="main-content">
+        <div className="button-container">
+          {["New Search", "Recent Search", "Favorite Search", "Watched Loads", "Rec. Loads"].map((label, index) => (
+            <Button 
+              key={index}
+              label={label}
+              onClick={() => handleButtonClick(index)}
+              isActive={activeButton === index} // Pass the active state to the button
+            />
+          ))}
         </div>
-        <div className="sidebar-item more-option">
-          <span>More</span>
-          <div className="more-icon">
-            <span className="circle"></span>
-            <span className="circle"></span>
-            <span className="circle"></span>
+
+        {isSidebarVisible && (
+          <LeftSidebar
+            selectedMenuItem={selectedMenuItem}
+            onMenuItemClick={handleMenuItemClick}
+          />
+        )}
+
+        {/* White box container for the Card */}
+        <div className="card-container">
+        <h2 className="card-title">Top Recommendations</h2>
+          <Card />
+          <Card/>
+        </div>
+
+        <div className = "search-filter-container">
+          <div className='dropdown-container'>
+          <h3 className="dropdown-title">Select an Option:</h3>
+          <Dropdown />
           </div>
-        </div>
-      </aside>
-
-      {/* Right Sidebar Section */}
-      <aside className="right-sidebar">
-        <h2 className="right-sidebar-title">Top Recommendations</h2>
-        <div className="right-sidebar-content">
-          <div className="recommendation-box">
-            <strong>From GREEN-BAY, WI</strong>
-            <p>Nov 22 6:00am - 7:30am</p>
-            <p>Drop Empty Trailer</p>
-            <p>Pick Up Loaded Trailer</p>
-            <div className="spacer"></div> {/* Space between sections */}
-            <strong>To MADISON, WI</strong>
-            <p>Dec 22 9:30am - 11:30am</p>
-            <p>Drop Loaded Trailer</p>
-            <p>Pick Up Empty Trailer</p>
-            <button className="contact-button">Contact to Book</button>
-          </div>
-          <div className="recommendation-box">
-            <strong>From CHICAGO, IL</strong>
-            <div className="spacer"></div>
-            <strong>To GLENVIEW, IL</strong>
-            <button className="contact-button">More Details</button>
-          </div>
-        </div>
-      </aside>
-
-
-
-
-      {/* Main Content Section */}
-      <main className="main-content">
-        {/* Horizontal Sidebar Section */}
-        <div className="horizontal-sidebar">
-          <button
-            className={`horizontal-btn ${activeSection === 'New Search' ? 'active' : ''}`}
-            onClick={() => handleSectionClick('New Search')}
-          >
-            New Search
-          </button>
-          <button
-            className={`horizontal-btn ${activeSection === 'Recent Search' ? 'active' : ''}`}
-            onClick={() => handleSectionClick('Recent Search')}
-          >
-            Recent Search
-          </button>
-          <button
-            className={`horizontal-btn ${activeSection === 'Favorite Search' ? 'active' : ''}`}
-            onClick={() => handleSectionClick('Favorite Search')}
-          >
-            Favorite Search
-          </button>
-          <button
-            className={`horizontal-btn ${activeSection === 'Watched Loads' ? 'active' : ''}`}
-            onClick={() => handleSectionClick('Watched Loads')}
-          >
-            Watched Loads
-          </button>
-        </div>
-
-        {/* Conditionally render based on the active section */}
-        {activeSection === 'New Search' && (
-                  <div>
-                    <form className="search-form" onSubmit={handleSearch}>
-                      {/* Capacity Type Dropdown */}
-                      <label htmlFor="capacity-type" className="form-label">Capacity Type</label>
-                      <div className="dropdown-container">
-                        <button type="button" onClick={toggleDropdown} className="dropdown-toggle">
-                          Select Capacity Type
-                        </button>
-                        {dropdownOpen && (
-                          <div className="dropdown-content">
-                            {['power-only', 'dry-van', 'dray', 'refrigerated', 'specialty'].map((capacity) => (
-                              <div key={capacity} className="checkbox-item">
-                                <input
-                                  type="checkbox"
-                                  id={capacity}
-                                  value={capacity}
-                                  onChange={handleCapacityChange}
-                                  checked={selectedCapacity.includes(capacity)}
-                                />
-                                <label htmlFor={capacity}>{capacity.replace('-', ' ').toUpperCase()}</label>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-
-                {/* Origin and Pickup Date Group */}
-                <div className="input-group">
+          {/* Origin and Pickup Date Group */}
+          <div className="input-group">
                    <div className="input-row">
                      <label htmlFor="origin" className="form-label">Origin</label>
                      <input
@@ -217,7 +142,6 @@ const LoadSearch = () => {
                      />
                    </div>
                    <div className="input-row">
-                     <label htmlFor="pickup-date" className="form-label">Pickup Date</label>
                      <input
                        type="date"
                        id="pickup-date"
@@ -227,120 +151,63 @@ const LoadSearch = () => {
                    </div>
                  </div>
 
-                {/* Destination and Drop-off Date Group */}
-                <div className="input-group">
-                  <div className="input-row">
-                    <label htmlFor="destination" className="form-label">Destination</label>
-                    <input
-                      type="text"
-                      id="destination"
-                      placeholder="destination"
-                      value={destination}
-                      onChange={(e) => setDestination(e.target.value)}
-                    />
-                  </div>
-                  <div className="input-row">
-                    <label htmlFor="dropoff-date" className="form-label">Drop-off Date</label>
-                    <input
-                      type="date"
-                      id="dropoff-date"
-                      value={dropoffDate}
-                      onChange={(e) => setDropoffDate(e.target.value)}
-                    />
-                  </div>
+          {/* Destination and Drop-off Date Group */}
+          <div className="input-group">
+            <div className="input-row">
+              <label htmlFor="destination" className="form-label">Destination</label>
+              <input
+                type="text"
+                id="destination"
+                placeholder="destination"
+                value={destination}
+                onChange={(e) => setDestination(e.target.value)}
+              />
+            </div>
+            <div className="input-row">
+              <input
+                type="date"
+                id="dropoff-date"
+                value={dropoffDate}
+                onChange={(e) => setDropoffDate(e.target.value)}
+              />
+            </div>
+          </div>
+
+
+          <div className="form-right">
+            <div className="miles-section">
+              <h2>Miles to be travelled</h2>
+              <div className="miles-inputs">
+                <div>
+                  <label htmlFor="minMiles">Minimum</label>
+                  <input
+                    type="number"
+                    id="minMiles"
+                    placeholder="Min miles"
+                    value={minMiles}
+                    onChange={(e) => setMinMiles(e.target.value)}
+                  />
                 </div>
-
-
-
-              <div className="form-right">
-                <div className="miles-section">
-                  <h2>Miles to be travelled</h2>
-                  <div className="miles-inputs">
-                    <div>
-                      <label htmlFor="minMiles">Minimum</label>
-                      <input
-                        type="number"
-                        id="minMiles"
-                        placeholder="Min miles"
-                        value={minMiles}
-                        onChange={(e) => setMinMiles(e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="maxMiles">Maximum</label>
-                      <input
-                        type="number"
-                        id="maxMiles"
-                        placeholder="Max miles"
-                        value={maxMiles}
-                        onChange={(e) => setMaxMiles(e.target.value)}
-                      />
-                    </div>
-                  </div>
+                <div>
+                  <label htmlFor="maxMiles">Maximum</label>
+                  <input
+                    type="number"
+                    id="maxMiles"
+                    placeholder="Max miles"
+                    value={maxMiles}
+                    onChange={(e) => setMaxMiles(e.target.value)}
+                  />
                 </div>
               </div>
-
-              <div className="form-bottom">
-                <button type="button" className="clear-btn" onClick={handleClear}>Clear</button>
-                <button type="button" className="favorite-btn"><strong>Favorite</strong></button>
-                <button type="submit" className="search-btn">Search</button>
-              </div>
-            </form>
+            </div>
           </div>
-        )}
 
-        {activeSection === 'Recent Search' && (
-          <div className="recent-search-section">
-            <h2>Recent Searches</h2>
-            {/* Placeholder content for Recent Search */}
-            <ul>
-              <li>Search 1 - [Origin -> Destination]</li>
-              <li>Search 2 - [Origin -> Destination]</li>
-              <li>Search 3 - [Origin -> Destination]</li>
-            </ul>
-          </div>
-        )}
+          
 
-        {activeSection === 'Favorite Search' && (
-          <div className="favorite-search-section">
-            <h2>Favorite Searches</h2>
-            {/* Placeholder content for Favorite Search */}
-            <ul>
-              <li>Favorite Search 1</li>
-              <li>Favorite Search 2</li>
-              <li>Favorite Search 3</li>
-            </ul>
-          </div>
-        )}
-
-        {activeSection === 'Watched Loads' && (
-          <div className="watched-loads-section">
-            <h2>Watched Loads</h2>
-            {/* Placeholder content for Watched Loads */}
-            <ul>
-              <li>Load 1 - [Details]</li>
-              <li>Load 2 - [Details]</li>
-              <li>Load 3 - [Details]</li>
-            </ul>
-          </div>
-        )}
-
-        {results.length > 0 && (
-                      <div className="results-section">
-                        <h2>Search Results</h2>
-                        <ul>
-                          {results.map((result, index) => (
-                            <li key={index}>
-                              <strong>From {result.origin} to {result.destination}</strong>
-                              <p>{result.details}</p>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-      </main>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default LoadSearch;
+export default App;

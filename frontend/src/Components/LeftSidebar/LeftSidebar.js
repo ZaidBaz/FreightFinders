@@ -1,8 +1,8 @@
 import React from "react";
 import { FaSearch } from "react-icons/fa"; // Icon library for the search icon
-import "frontend\src\Components\left-sidebar.css";
+import './LeftSidebar.css'; // Correct import for the CSS file
 
-const Sidebar = () => {
+const LeftSidebar = () => {
   return (
     <div className="sidebar">
       <ul className="sidebar-list">
@@ -19,4 +19,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default LeftSidebar;
