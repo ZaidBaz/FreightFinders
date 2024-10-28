@@ -50,7 +50,7 @@ const LoadSearch = () => {
   // Prevent form from refreshing the page
       event.preventDefault();
       // Create an object with all users inputs
-
+      console.log(selectedCapacity);
       const searchData = {
         origin_city: origin,
         destination_city: destination,
@@ -334,8 +334,8 @@ const LoadSearch = () => {
                         <ul>
                           {results.map((result, index) => (
                             <li key={index}>
-                              <strong>From {result.origin} to {result.destination}</strong>
-                              <p>{result.details}</p>
+                              <strong>From {result.load_stops[0]?.city} to {result.load_stops[result.load_stops.length - 1]?.city}</strong>
+                              <p>LOAD ID: {result.load_id}, TRANSPORT MODE: {result.transport_mode}</p>
                             </li>
                           ))}
                         </ul>
