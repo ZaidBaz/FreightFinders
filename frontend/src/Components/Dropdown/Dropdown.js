@@ -38,7 +38,7 @@ const Dropdown = ({setSelectedCapacity,selectedCapacity}) => {
       </div>
       {isOpen && (
                           <div className="dropdown-content">
-                            {['power-only', 'dry-van', 'dray', 'refrigerated', 'specialty'].map((capacity) => (
+                            {['power only', 'dry van', 'dray', 'refrigerated', 'specialty'].map((capacity) => (
                               <div key={capacity} className="checkbox-item">
                                 <input
                                   type="checkbox"
