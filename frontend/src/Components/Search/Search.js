@@ -1,11 +1,11 @@
 // Button.js
 import React from 'react';
-import './SearchButton.css';
+import './Search.css';
 
 const Button = ({ label, onClick, isActive }) => {
   return (
     <button
-      className={`custom-button ${isActive ? 'active' : ''}`}
+      className={`custom-search-button ${isActive ? 'active' : ''}`}
       onClick={onClick}
     >
       {label}
