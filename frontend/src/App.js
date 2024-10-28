@@ -50,28 +50,31 @@ const LoadSearch = () => {
   // Prevent form from refreshing the page
       event.preventDefault();
       // Create an object with all users inputs
+
       const searchData = {
-        capacity_types: selectedCapacity,
-        origin,
-        destination,
-        pickup_date: pickupDate,
-        dropoff_date: dropoffDate,
-        min_miles: minMiles,
-        max_miles: maxMiles,
+        origin_city: origin,
+        destination_city: destination,
+        earliest_start_date: pickupDate,
+        latest_start_date: dropoffDate,
+        transport_modes: selectedCapacity.join(','),  // Convert array to comma-separated string
       };
+
+      const queryParams = new URLSearchParams(searchData).toString();
 
 
       try {
             // Send data to the backend (Django)
-            const response = await fetch('http://our-backend-url/api/search', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(searchData),
+            const response = await fetch(`http://127.0.0.1:8000/filter-loads/?${queryParams}`, {
+              method: 'GET',
+              // headers: {
+              //   'Content-Type': 'application/json',
+              // },
+              // body: JSON.stringify(searchData),
             });
 
+
             const result = await response.json();
+            console.log('API Response:', result);
             setResults(result); // Set the search results from backend response
           } catch (error) {
             console.error('Errors during search from Backend:', error);
