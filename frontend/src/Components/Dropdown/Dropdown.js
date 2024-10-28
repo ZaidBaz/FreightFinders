@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Dropdown.css';
 
-const Dropdown = () => {
+const Dropdown = ({setSelectedCapacity,selectedCapacity}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState({
     dray: false,
@@ -15,11 +15,19 @@ const Dropdown = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleCheckboxChange = (option) => {
-    setSelectedOptions(prevState => ({
-      ...prevState,
-      [option]: !prevState[option],
-    }));
+  // const handleCheckboxChange = (option) => {
+  //   setSelectedOptions(prevState => ({
+  //     ...prevState,
+  //     [option]: !prevState[option],
+  //   }));
+  // };
+
+  const handleCapacityChange = (event) => {
+    console.log("Pearl Bharti123",event.target.value)
+    const value = event.target.value;
+    setSelectedCapacity((prev) =>
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value] // Corrected parentheses here
+    );
   };
 
   return (
@@ -29,49 +37,21 @@ const Dropdown = () => {
         <span className="dropdown-arrow">{isOpen ? '▲' : '▼'}</span>
       </div>
       {isOpen && (
-        <div className="dropdown-menu">
-          <label>
-            <input
-              type="checkbox"
-              checked={selectedOptions.dray}
-              onChange={() => handleCheckboxChange('dray')}
-            />
-            Dray
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              checked={selectedOptions.powerOnly}
-              onChange={() => handleCheckboxChange('powerOnly')}
-            />
-            Power Only
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              checked={selectedOptions.dryVan}
-              onChange={() => handleCheckboxChange('dryVan')}
-            />
-            Dry Van
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              checked={selectedOptions.refrigerated}
-              onChange={() => handleCheckboxChange('refrigerated')}
-            />
-            Refrigerated
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              checked={selectedOptions.speciality}
-              onChange={() => handleCheckboxChange('speciality')}
-            />
-            Speciality
-          </label>
-        </div>
-      )}
+                          <div className="dropdown-content">
+                            {['power-only', 'dry-van', 'dray', 'refrigerated', 'specialty'].map((capacity) => (
+                              <div key={capacity} className="checkbox-item">
+                                <input
+                                  type="checkbox"
+                                  id={capacity}
+                                  value={capacity}
+                                  onChange={handleCapacityChange}
+                                  checked={selectedCapacity.includes(capacity)}
+                                />
+                                <label htmlFor={capacity}>{capacity.replace('-', ' ').toUpperCase()}</label>
+                              </div>
+                            ))}
+                          </div>
+                        )}
     </div>
   );
 };

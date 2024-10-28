@@ -2,11 +2,10 @@ import React, { useState } from 'react';
 import './App.css'; 
 
 import Navbar from './Components/Navbar/Navbar.js';
-import RadiusSlider from './Components/RadiusSlider/RadiusSlider.js'
 import Button from './Components/Button/Button.js';
-// import SearchButton from './Components/SearchButton/SearchButton.js';
+import Search from './Components/Search/Search.js';
 import LeftSidebar from './Components/LeftSidebar/LeftSidebar.js';
-import Dropdown from './Components/Dropdown/Dropdown.js'
+import Dropdown from './Components/Dropdown/Dropdown.js';
 import Card from './Components/Card'; // Import the Card component
 
 const App = () => {
@@ -19,15 +18,15 @@ const App = () => {
   // State for tracking the selected menu item in the sidebar
   const [selectedMenuItem, setSelectedMenuItem] = useState(null);
 
-  // Define other states that were missing
-  // const [selectedCapacity, setSelectedCapacity] = useState([]); // Ensure this is defined
+  // Define states
+  const [selectedCapacity, setSelectedCapacity] = useState([]); // Ensure this is defined
   const [origin, setOrigin] = useState(''); // Define the origin state
   const [destination, setDestination] = useState(''); // Define the destination state
   const [pickupDate, setPickupDate] = useState(''); // Define the pickup date state
   const [dropoffDate, setDropoffDate] = useState(''); // Define the dropoff date state
   const [minMiles, setMinMiles] = useState(''); // Define the min miles state
   const [maxMiles, setMaxMiles] = useState(''); // Define the max miles state
-  // const [results, setResults] = useState([]); // Define results state
+  const [results, setResults] = useState([]); // Define results state
 
   // Handler for toggling sidebar visibility
   const toggleSidebar = () => {
@@ -39,12 +38,7 @@ const App = () => {
     setActiveButton(buttonIndex);
   };
 
-  // const handleCapacityChange = (event) => {
-  //   const value = event.target.value;
-  //   setSelectedCapacity((prev) =>
-  //     prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value] // Corrected parentheses here
-  //   );
-  // };
+  
 
   // Handler for selecting a menu item in the sidebar
   const handleMenuItemClick = (item) => {
@@ -52,46 +46,51 @@ const App = () => {
   };
 
   // Handle clear button
-  // const handleClear = () => {
-  //   setSelectedCapacity([]);
-  //   setOrigin('');
-  //   setDestination('');
-  //   setPickupDate('');
-  //   setDropoffDate('');
-  //   setMinMiles('');
-  //   setMaxMiles('');
-  // };
+  const handleClear = () => {
+    setSelectedCapacity([]);
+    setOrigin('');
+    setDestination('');
+    setPickupDate('');
+    setDropoffDate('');
+    setMinMiles('');
+    setMaxMiles('');
+  };
 
-  // // Handle Search Button
-  // const handleSearch = async (event) => {
-  //   event.preventDefault();
-  //   const searchData = {
-  //     capacity_types: selectedCapacity,
-  //     origin,
-  //     destination,
-  //     pickup_date: pickupDate,
-  //     dropoff_date: dropoffDate,
-  //     min_miles: minMiles,
-  //     max_miles: maxMiles,
-  //   };
+  // Handle Search Button
+  const handleSearch = async (event) => {
+    event.preventDefault();
+    const searchData = {
+        origin_city: origin,
+        destination_city: destination,
+        earliest_start_date: pickupDate,
+        latest_start_date: dropoffDate,
+        transport_modes: selectedCapacity.join(','),  // Convert array to comma-separated string
+      };
+      console.log("HIPearl", searchData)
+      const queryParams = new URLSearchParams(searchData).toString();
 
-  //   try {
-  //     const response = await fetch('http://our-backend-url/api/search', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(searchData),
-  //     });
-  //     const result = await response.json();
-  //     setResults(result); // Set the search results from backend response
-  //   } catch (error) {
-  //     console.error('Errors during search from Backend:', error);
-  //   }
-  // };
 
-  
-  
+      try {
+            // Send data to the backend (Django)
+            const response = await fetch(`http://127.0.0.1:8000/filter-loads/?${queryParams}`, {
+              method: 'GET',
+              // headers: {
+              //   'Content-Type': 'application/json',
+              // },
+              // body: JSON.stringify(searchData),
+      });
+
+
+      const result = await response.json();
+            console.log('API Response:', result);
+      setResults(result); // Set the search results from backend response
+    } catch (error) {
+      console.error('Errors during search from Backend:', error);
+    }
+  };
+
+
+
   return (
     <div className="app">
       {/* Navbar component with a toggle button */}
@@ -119,37 +118,39 @@ const App = () => {
 
         {/* White box container for the Card */}
         <div className="card-container">
-        <h2 className="card-title">Top Recommendations</h2>
+          <h2 className="card-title">Top Recommendations</h2>
           <Card />
-          <Card/>
+          <Card />
         </div>
 
-        <div className = "search-filter-container">
+        <div className="search-filter-container">
           <div className='dropdown-container'>
-          <h3 className="dropdown-title">Select an Option:</h3>
-          <Dropdown />
+            <h3 className="dropdown-title">Select an Option:</h3>
+            <Dropdown
+             setSelectedCapacity= {setSelectedCapacity}
+             selectedCapacity={selectedCapacity}/>
           </div>
           {/* Origin and Pickup Date Group */}
           <div className="input-group">
-                   <div className="input-row">
-                     <label htmlFor="origin" className="form-label">Origin</label>
-                     <input
-                       type="text"
-                       id="origin"
-                       placeholder="origin"
-                       value={origin}
-                       onChange={(e) => setOrigin(e.target.value)}
-                     />
-                   </div>
-                   <div className="input-row">
-                     <input
-                       type="date"
-                       id="pickup-date"
-                       value={pickupDate}
-                       onChange={(e) => setPickupDate(e.target.value)}
-                     />
-                   </div>
-                 </div>
+            <div className="input-row">
+              <label htmlFor="origin" className="form-label">Origin</label>
+              <input
+                type="text"
+                id="origin"
+                placeholder="origin"
+                value={origin}
+                onChange={(e) => setOrigin(e.target.value)}
+              />
+            </div>
+            <div className="input-row">
+              <input
+                type="date"
+                id="pickup-date"
+                value={pickupDate}
+                onChange={(e) => setPickupDate(e.target.value)}
+              />
+            </div>
+          </div>
 
           {/* Destination and Drop-off Date Group */}
           <div className="input-group">
@@ -173,36 +174,28 @@ const App = () => {
             </div>
           </div>
 
-
-          <div className="form-right">
-            <div className="miles-section">
-              <h2>Miles to be travelled</h2>
-              <div className="miles-inputs">
-                <div>
-                  <label htmlFor="minMiles">Minimum</label>
-                  <input
-                    type="number"
-                    id="minMiles"
-                    placeholder="Min miles"
-                    value={minMiles}
-                    onChange={(e) => setMinMiles(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="maxMiles">Maximum</label>
-                  <input
-                    type="number"
-                    id="maxMiles"
-                    placeholder="Max miles"
-                    value={maxMiles}
-                    onChange={(e) => setMaxMiles(e.target.value)}
-                  />
-                </div>
-              </div>
-            </div>
+          <div className="button-container-2">
+            <Search
+              label="Search"
+              onClick={handleSearch} // Updated to the correct function name
+              isActive={activeButton === 0} // Assuming activeButton is used for state tracking
+            />
           </div>
 
-          
+          {results.length > 0 && (
+                      <div className="results-section">
+                        <h2>Search Results</h2>
+                        <ul>
+                          {results.map((result, index) => (
+                            <li key={index}>
+                              <strong>From {result.load_stops[0]?.city} to {result.load_stops[result.load_stops.length - 1]?.city}</strong>
+                              <p>LOAD ID: {result.load_id}, TRANSPORT MODE: {result.transport_mode}</p>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
 
         </div>
       </div>

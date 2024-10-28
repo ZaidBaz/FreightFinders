@@ -98,6 +98,8 @@
 /* Main Content styling */
 .main-content {
   flex: 1;
+  width: 100vw; /* Full viewport width */
+  height: 100vh;
   background-color: #E8E5E1;
   display: flex; /* Enable Flexbox layout for alignment */
   flex-direction: column; /* Stack children vertically */
@@ -149,8 +151,7 @@
 }
 
 .miles-inputs div {
-  flex: 1; /* Make each input take equal space */
-  margin-right: 05px; /* Space between inputs */
+    margin-right: 05px; /* Space between inputs */
 }
 
 .form-bottom {
