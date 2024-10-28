@@ -1,56 +1,4 @@
-/* Set up the grid layout */
-.container {
-  font-family: Arial, sans-serif;
-  overflow-x: hidden;
-  width:100%;
-  display: grid;
-  grid-template-columns: 82px 1fr 200px; /* Left Sidebar, Main Content, Right Sidebar */
-  grid-template-rows: auto 1fr; /* Header and content area */
-  grid-template-areas:
-    "header header header"
-    "left-sidebar main-content right-sidebar";
-  height: 100vh;
-}
 
-
-/* Header styling */
-.header {
-  grid-area: header;
-  display: flex;
-  justify-content: flex-start; /* Align to the left */
-  align-items: center;
-  background-color: #ffffff;
-  height: 1.5rem;
-  padding: 0.7rem 0;
-  /* box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);*/
-} 
-
-.header-content {
-  text-align: left; /* Align text to the left */
-}
-
-.header-title {
-  font-size: 0.8rem;
-  margin-left: 10px;
-}
-
-.header-title-orange {
-  color: #FF5C14;
-  font-weight: bold;
-}
-
-.header-title-black {
-  color: #5A514D;
-  font-weight: bold;
-}
-
-.horizontal-line {
-  height: 2px;
-  background-color: #333;
-  width: 100%;
-  position: absolute;
-  top: 0;
-}
 
 /* Left Sidebar styling */
 .left-sidebar {
@@ -66,7 +14,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin: 20px 0; /* Add space between sidebar items */
+  margin: 60px 0; /* Add space between sidebar items */
   font-size: 1rem; /* Standard text size */
   cursor: pointer;
   color: black;
@@ -125,38 +73,8 @@
   font-weight: bold;
 }
 
-/* Right Sidebar styling */
-.right-sidebar {
-  grid-area: right-sidebar;
-  background-color: #E8E5E1;
-  padding: 20px;
-}
 
-.right-sidebar {
-  display: flex;
-  flex-direction: column; /* Stack title and content vertically */
-  height: 100%;
-}
 
-.right-sidebar-title {
-  font-size: 1.4rem;
-  font-weight: bold; /* Makes the text bold */
-  margin-bottom: 10px; /* Space below the title */
-}
-
-.right-sidebar-content {
-  flex: 3; /* Take remaining space */
-  display: flex; /* Flexbox to align content */
-  flex-direction: column; /* Stack content vertically */
-}
-.recommendation-box {
-  background-color: #f0f0f0; /* Background color for the boxes */
-  border: 1px solid #ccc; /* Border color */
-  border-radius: 4px;
-  padding: 10px;
-  margin: 5px 0;
-  flex: 1;
-}
 
 .spacer {
   height: 15px;
@@ -183,8 +101,7 @@
   background-color: #E8E5E1;
   display: flex; /* Enable Flexbox layout for alignment */
   flex-direction: column; /* Stack children vertically */
-  padding: 05px; /* Add some padding */
-  max-width: 8200px;
+  /* padding: 05px; Add some padding */
   margin: 0 auto; /* Center the main content */
 }
 
@@ -204,7 +121,8 @@
 
 .input-group {
   display: flex;
-  align-items: center;
+  margin-bottom: 10px;
+  align-items: left;
   margin-bottom: 15px; /* Spacing between the input groups */
 }
 
@@ -240,42 +158,65 @@
   justify-content: space-between; /* Space out the buttons */
 }
 
-/* Horizontal Sidebar (Navigation Buttons) styling */
-.horizontal-sidebar {
+.button-container {
   display: flex;
-  justify-content: center; /* Center the sidebar */
+  gap: 1rem;
   background-color: #E8E5E1;
-  padding: 10px;
-  /* border-bottom: 2px solid #ccc; */
-  margin-bottom: 20px;
-  border-radius: 8px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.horizontal-btn {
-  flex: 1; /* Make each button take up an equal amount of space */
-  background-color: #CFCFCF;
-  border: 1px solid #ccc;
   font-size: 0.8rem;
-  cursor: pointer;
   padding: 10px;
-  text-align: center;
-  margin: 0 10px; /* Add margin between buttons */
+  justify-content: left;
+  align-items: center;
+  position: absolute;
+  left: 82px;
+  right: 150px;
+  margin: 0 10px;
   transition: background-color 0.3s ease, color 0.3s ease;
-  border-radius: 4px;
 }
 
-.horizontal-btn.active {
-  border-left: 0.4rem solid #FF5C14; /* Orange highlight for active section */
-  font-weight: bold;
+.card-container {
+  padding-top: 20px;
+  justify-content: flex-end;
+  flex-direction: column;
   background-color: white;
+  border-radius: 5px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  margin: 20px 0; /* Space between card and other elements */
+  /* width: 30%;  */
+  width: 332px; /* Optional: Set max width for card */
+  height: 615px;
+  margin-right: 10px;
+  position: absolute; /* Use absolute positioning */
+  right: 0; /* Stick to the right edge */
+  top: 35px; /* Adjust as needed to control vertical positioning */
 }
 
-.horizontal-btn:hover {
-  background-color: #FF5C14;
-  color: white;
+.search-filter-container {
+  flex-direction: column;
+  background-color: white; /* White background */
+  border-radius: 5px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  width: 750px; /* Optional: Set max width for card */
+  height: 615px;
+  margin-left: 8px;
+  position: absolute; /* Changed to fixed positioning */
+  left: 90px; /* Stick to the right edge */
+  top:95px; /* Adjusted to stick just below the top of the page */
 }
+
+.dropdown-title {
+  left:20px;
+  width:200px;
+  font-size: 14px;     /* Adjust the font size as needed */
+}
+
+.dropdown-container{
+  display: flex;
+  flex-direction: row;
+
+}
+
 
 /* Search Form styling */
 .search-form {
@@ -452,16 +393,11 @@ input[type="date"] {
   color: black;
 }
 
-.input-group {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 10px;
-}
 
 .input-row {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  align-items: left;
+  /* justify-content: space-between; */
   margin-bottom: 05px;
 }
 

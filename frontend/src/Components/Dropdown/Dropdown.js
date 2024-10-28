@@ -5,6 +5,8 @@ const Dropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState({
     dray: false,
+    dryVan: false,
+    refrigerated:false,
     powerOnly: false,
     speciality: false,
   });
@@ -43,6 +45,22 @@ const Dropdown = () => {
               onChange={() => handleCheckboxChange('powerOnly')}
             />
             Power Only
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              checked={selectedOptions.dryVan}
+              onChange={() => handleCheckboxChange('dryVan')}
+            />
+            Dry Van
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              checked={selectedOptions.refrigerated}
+              onChange={() => handleCheckboxChange('refrigerated')}
+            />
+            Refrigerated
           </label>
           <label>
             <input
