@@ -102,7 +102,6 @@
   display: flex; /* Enable Flexbox layout for alignment */
   flex-direction: column; /* Stack children vertically */
   /* padding: 05px; Add some padding */
-  max-width: 8200px;
   margin: 0 auto; /* Center the main content */
 }
 
@@ -122,7 +121,8 @@
 
 .input-group {
   display: flex;
-  align-items: center;
+  margin-bottom: 10px;
+  align-items: left;
   margin-bottom: 15px; /* Spacing between the input groups */
 }
 
@@ -205,6 +205,17 @@
   top:95px; /* Adjusted to stick just below the top of the page */
 }
 
+.dropdown-title {
+  left:20px;
+  width:200px;
+  font-size: 14px;     /* Adjust the font size as needed */
+}
+
+.dropdown-container{
+  display: flex;
+  flex-direction: row;
+
+}
 
 
 /* Search Form styling */
@@ -382,16 +393,11 @@ input[type="date"] {
   color: black;
 }
 
-.input-group {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 10px;
-}
 
 .input-row {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  align-items: left;
+  /* justify-content: space-between; */
   margin-bottom: 05px;
 }
 
