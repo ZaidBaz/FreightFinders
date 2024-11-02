@@ -18,8 +18,16 @@ from django.contrib import admin
 from django.urls import path
 from backendapp import views
 
+
 urlpatterns = [
     path('', views.home, name='home'),
     path('admin/', admin.site.urls),
-    path('filter-loads/', views.filter_loads, name = 'filter-loads')
+    path('filter-loads/', views.filter_loads, name = 'filter-loads'),
+
+    #PC MILER APIs
+    path('single-search/', views.single_search_view, name='single_search'),
+    path('geocode/', views.geocode_search_view, name='geocode_search'),
+    path('reverse-geocode/', views.reverse_geocode_view, name='reverse_geocode'),
+    path('radius-search/', views.radius_search_view, name='radius_search'),
+    
 ]

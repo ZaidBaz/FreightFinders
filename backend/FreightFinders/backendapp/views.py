@@ -9,6 +9,39 @@ from .models import LoadPosting
 from django.db.models import Max, OuterRef, Subquery, F, Q, Prefetch
 from django.db import connection
 from concurrent.futures import ThreadPoolExecutor
+from .pc_miler_utils import single_search, geocode_search, reverse_geocode_search, radius_search
+
+
+#PC MILER VIEWS START HERE
+def single_search_view(request):
+    query = request.GET.get('query', '54115')  # Default zip code if not provided
+    data = single_search(query=query)
+    return JsonResponse(data)
+
+def geocode_search_view(request):
+    street = request.GET.get('street')
+    city = request.GET.get('city')
+    state = request.GET.get('state')
+    postcode = request.GET.get('postcode')
+    data = geocode_search(street=street, city=city, state=state, postcode=postcode)
+    return JsonResponse(data)
+
+def reverse_geocode_view(request):
+    latitude = request.GET.get('latitude')
+    longitude = request.GET.get('longitude')
+    data = reverse_geocode_search(latitude=latitude, longitude=longitude)
+    return JsonResponse(data)
+
+def radius_search_view(request):
+    center_lat = request.GET.get('center_lat')
+    center_lon = request.GET.get('center_lon')
+    radius = request.GET.get('radius', 5)  # Default radius if not provided
+    data = radius_search(center_lat=center_lat, center_lon=center_lon, radius=radius)
+    return JsonResponse(data)
+
+#PC MILER VIEWS END HERE
+
+
 
 def search_locations(request):
     # Get origin input
