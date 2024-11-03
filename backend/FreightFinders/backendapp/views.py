@@ -11,13 +11,11 @@ from django.db import connection
 from concurrent.futures import ThreadPoolExecutor
 from .pc_miler_utils import single_search, geocode_search, reverse_geocode_search, radius_search
 
-
 #PC MILER VIEWS START HERE
 def single_search_view(request):
     query = request.GET.get('query', '54115')  # Default zip code if not provided
     data = single_search(query=query)
     return JsonResponse(data)
-
 def geocode_search_view(request):
     street = request.GET.get('street')
     city = request.GET.get('city')
@@ -25,22 +23,18 @@ def geocode_search_view(request):
     postcode = request.GET.get('postcode')
     data = geocode_search(street=street, city=city, state=state, postcode=postcode)
     return JsonResponse(data)
-
 def reverse_geocode_view(request):
     latitude = request.GET.get('latitude')
     longitude = request.GET.get('longitude')
     data = reverse_geocode_search(latitude=latitude, longitude=longitude)
     return JsonResponse(data)
-
 def radius_search_view(request):
     center_lat = request.GET.get('center_lat')
     center_lon = request.GET.get('center_lon')
     radius = request.GET.get('radius', 5)  # Default radius if not provided
     data = radius_search(center_lat=center_lat, center_lon=center_lon, radius=radius)
     return JsonResponse(data)
-
 #PC MILER VIEWS END HERE
-
 
 
 def search_locations(request):
@@ -54,15 +48,21 @@ def search_locations(request):
     destination_state_input = request.GET.get('destination_state', '').lower()
     destination_postal_code_input = request.GET.get('destination_postal_code', '').lower()
 
+    origin_anywhere = origin_city_input == "anywhere" or origin_state_input == "anywhere" or origin_postal_code_input == "anywhere"
+    destination_anywhere = destination_city_input == "anywhere" or destination_state_input == "anywhere" or destination_postal_code_input == "anywhere"
+
+    if origin_anywhere and destination_anywhere:
+        return JsonResponse({"error": "Either destination or origin can be anywhere, but not both."}, status=400)
+    
     # Query for origin stops using Django ORM
-    origin_query = LoadStop.objects.all()
-    origin_query = origin_query.filter(stop_sequence=1)
-    if origin_city_input:
-        origin_query = origin_query.filter(city__iexact=origin_city_input)
-    if origin_state_input:
-        origin_query = origin_query.filter(state__iexact=origin_state_input)
-    if origin_postal_code_input:
-        origin_query = origin_query.filter(postal_code__iexact=origin_postal_code_input)
+    origin_query = LoadStop.objects.all().filter(stop_sequence=1)
+    if not origin_anywhere:
+        if origin_city_input:
+            origin_query = origin_query.filter(city__iexact=origin_city_input)
+        if origin_state_input:
+            origin_query = origin_query.filter(state__iexact=origin_state_input)
+        if origin_postal_code_input:
+            origin_query = origin_query.filter(postal_code__iexact=origin_postal_code_input)
 
     max_sequence_subquery = (
         LoadStop.objects
@@ -80,12 +80,13 @@ def search_locations(request):
     )
 
     # Query for destination stops using Django ORM
-    if destination_city_input:
-        destination_query = destination_query.filter(city__iexact=destination_city_input)
-    if destination_state_input:
-        destination_query = destination_query.filter(state__iexact=destination_state_input)
-    if destination_postal_code_input:
-        destination_query = destination_query.filter(postal_code__iexact=destination_postal_code_input)
+    if not destination_anywhere:
+        if destination_city_input:
+            destination_query = destination_query.filter(city__iexact=destination_city_input)
+        if destination_state_input:
+            destination_query = destination_query.filter(state__iexact=destination_state_input)
+        if destination_postal_code_input:
+            destination_query = destination_query.filter(postal_code__iexact=destination_postal_code_input)
 
     # Convert QuerySet to list of dictionaries
     origin_data = list(origin_query.values())
@@ -96,10 +97,17 @@ def search_locations(request):
     destination_load_ids = {item['load_id'] for item in destination_data}
 
     # Find common load_ids
-    common_load_ids = origin_load_ids.intersection(destination_load_ids)
+    # common_load_ids = origin_load_ids.intersection(destination_load_ids)
     # Return the result as JSON
 
     # print('search-locations: ', common_load_ids)
+
+    if origin_anywhere:
+        common_load_ids = destination_load_ids
+    elif destination_anywhere:
+        common_load_ids = origin_load_ids
+    else:
+        common_load_ids = origin_load_ids.intersection(destination_load_ids)
 
     return common_load_ids
 
