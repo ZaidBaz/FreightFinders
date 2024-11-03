@@ -4,18 +4,17 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from .supabase_client import get_supabase_client
 from datetime import datetime
-from .models import LoadStop
-from .models import LoadPosting
+from .models import LoadStop, LoadPosting
 from django.db.models import Max, OuterRef, Subquery, F, Q, Prefetch
-from django.db import connection
 from concurrent.futures import ThreadPoolExecutor
 from .pc_miler_utils import single_search, geocode_search, reverse_geocode_search, radius_search
 
-#PC MILER VIEWS START HERE
+# PC MILER VIEWS START HERE
 def single_search_view(request):
     query = request.GET.get('query', '54115')  # Default zip code if not provided
     data = single_search(query=query)
     return JsonResponse(data)
+
 def geocode_search_view(request):
     street = request.GET.get('street')
     city = request.GET.get('city')
@@ -23,37 +22,37 @@ def geocode_search_view(request):
     postcode = request.GET.get('postcode')
     data = geocode_search(street=street, city=city, state=state, postcode=postcode)
     return JsonResponse(data)
+
 def reverse_geocode_view(request):
     latitude = request.GET.get('latitude')
     longitude = request.GET.get('longitude')
     data = reverse_geocode_search(latitude=latitude, longitude=longitude)
     return JsonResponse(data)
+
 def radius_search_view(request):
     center_lat = request.GET.get('center_lat')
     center_lon = request.GET.get('center_lon')
     radius = request.GET.get('radius', 5)  # Default radius if not provided
     data = radius_search(center_lat=center_lat, center_lon=center_lon, radius=radius)
     return JsonResponse(data)
-#PC MILER VIEWS END HERE
-
+# PC MILER VIEWS END HERE
 
 def search_locations(request):
-    # Get origin input
+    # Get origin and destination input
     origin_city_input = request.GET.get('origin_city', '').lower()
     origin_state_input = request.GET.get('origin_state', '').lower()
     origin_postal_code_input = request.GET.get('origin_postal_code', '').lower()
-
-    # Get destination input
     destination_city_input = request.GET.get('destination_city', '').lower()
     destination_state_input = request.GET.get('destination_state', '').lower()
     destination_postal_code_input = request.GET.get('destination_postal_code', '').lower()
 
+    # Check for 'anywhere' input
     origin_anywhere = origin_city_input == "anywhere" or origin_state_input == "anywhere" or origin_postal_code_input == "anywhere"
     destination_anywhere = destination_city_input == "anywhere" or destination_state_input == "anywhere" or destination_postal_code_input == "anywhere"
 
     if origin_anywhere and destination_anywhere:
         return JsonResponse({"error": "Either destination or origin can be anywhere, but not both."}, status=400)
-    
+
     # Query for origin stops using Django ORM
     origin_query = LoadStop.objects.all().filter(stop_sequence=1)
     if not origin_anywhere:
@@ -87,20 +86,11 @@ def search_locations(request):
             destination_query = destination_query.filter(state__iexact=destination_state_input)
         if destination_postal_code_input:
             destination_query = destination_query.filter(postal_code__iexact=destination_postal_code_input)
-
-    # Convert QuerySet to list of dictionaries
+    
     origin_data = list(origin_query.values())
     destination_data = list(destination_query.values())
-
-    # print(origin_data)
     origin_load_ids = {item['load_id'] for item in origin_data}
     destination_load_ids = {item['load_id'] for item in destination_data}
-
-    # Find common load_ids
-    # common_load_ids = origin_load_ids.intersection(destination_load_ids)
-    # Return the result as JSON
-
-    # print('search-locations: ', common_load_ids)
 
     if origin_anywhere:
         common_load_ids = destination_load_ids
@@ -111,9 +101,7 @@ def search_locations(request):
 
     return common_load_ids
 
-
 def search_dates(request):
-
     start_date_earliest = request.GET.get('earliest_start_date', '').lower()
     start_date_latest = request.GET.get('latest_start_date', '').lower()
     end_date_earliest = request.GET.get('earliest_end_date', '').lower()
@@ -151,7 +139,6 @@ def search_dates(request):
             appointment_from__lte=start_date_latest
         )
 
-    
     max_sequence_subquery = (
         LoadStop.objects
         .filter(load_id=OuterRef('load_id'))
@@ -167,7 +154,7 @@ def search_dates(request):
         .filter(stop_sequence=F('max_sequence'))
         .defer('max_sequence')
     )
-    
+
     if(end_date_earliest and end_date_latest):
 
         end_date_earliest = datetime.strptime(end_date_earliest, '%Y-%m-%d')
@@ -195,19 +182,15 @@ def search_dates(request):
             appointment_from__lte=end_date_latest
         )
 
-
-
     origin_dates_data = list(origin_dates_query.values())
     destination_dates_data = list(destination_dates_query.values())
-
     origin_load_ids = {item['load_id'] for item in origin_dates_data}
     destination_load_ids = {item['load_id'] for item in destination_dates_data}
-
+    
     # Find common load_ids
     common_load_ids = origin_load_ids.intersection(destination_load_ids)
-
-
     return common_load_ids
+
 
 def multi_capacity_type(request):
     multi_capacities = request.GET.get('transport_modes', '').lower()
@@ -230,7 +213,11 @@ def multi_capacity_type(request):
 
     return capacities_data
 
+
 def filter_loads(request):
+    # get range for miles to be travelled
+    min_distance = float(request.GET.get('min_distance', 0))
+    max_distance = float(request.GET.get('max_distance', float('inf')))
 
     def get_load_ids_locations():
         return search_locations(request)
@@ -241,38 +228,32 @@ def filter_loads(request):
     def get_load_ids_capacity_types():
         return multi_capacity_type(request)
 
-    # Execute functions in parallel
     with ThreadPoolExecutor() as executor:
-        # Submit tasks to the executor
         future_locations = executor.submit(get_load_ids_locations)
         future_dates = executor.submit(get_load_ids_dates)
         future_capacity_types = executor.submit(get_load_ids_capacity_types)
 
-        # Retrieve results
         load_ids_locations = future_locations.result()
         load_ids_dates = future_dates.result()
         load_ids_capacity_types = future_capacity_types.result()
 
     load_ids_locations_dates = load_ids_locations.intersection(load_ids_dates)
-
     all_load_ids = load_ids_capacity_types.intersection(load_ids_locations_dates)
 
     load_stops_prefetch = Prefetch(
         'loadid_stops',
-        queryset= LoadStop.objects.filter(load_id__in=all_load_ids),
-        # queryset=LoadStop.objects.filter(load_id__in=all_load_ids).values(
-        #     'stop_sequence', 'stop_type', 'appointment_from', 'appointment_to', 'city', 'state', 'postal_code'
-        # ),
+        queryset=LoadStop.objects.filter(load_id__in=all_load_ids),
         to_attr='stops'
     )
 
-    load_postings = LoadPosting.objects.filter(load_id__in=all_load_ids).prefetch_related(load_stops_prefetch)
-    
-    # Prepare the response list
-    result = []
+    load_postings = LoadPosting.objects.filter(
+        load_id__in=all_load_ids,
+        total_distance__gte=min_distance,
+        total_distance__lte=max_distance
+    ).prefetch_related(load_stops_prefetch)
 
+    result = []
     for load_posting in load_postings:
-        # Collect load stops from prefetch (no extra queries)
         load_stops = [
             {
                 'stop_sequence': stop.stop_sequence,
@@ -283,9 +264,8 @@ def filter_loads(request):
                 'state': stop.state,
                 'postal_code': stop.postal_code,
             }
-            for stop in load_posting.stops  # Filtered fields
+            for stop in load_posting.stops
         ]
-        # Create a dictionary for each load posting with nested load stops
         result.append({
             'load_id': load_posting.load_id,
             'total_distance': load_posting.total_distance,
@@ -296,9 +276,7 @@ def filter_loads(request):
             'load_stops': load_stops
         })
 
-    return JsonResponse(result, safe = False )
-
-    # multi_capacity_type
+    return JsonResponse(result, safe=False)
 
 def home(request):
-    return JsonResponse("Welcome to the homepage!", safe = False)
+    return JsonResponse("Welcome to the homepage!", safe=False)
