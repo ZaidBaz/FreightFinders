@@ -7,6 +7,8 @@ import Search from './Components/Search/Search.js';
 import LeftSidebar from './Components/LeftSidebar/LeftSidebar.js';
 import Dropdown from './Components/Dropdown/Dropdown.js';
 import Card from './Components/Card'; // Import the Card component
+import Checkbox from './Components/Checkbox/Checkbox';
+import RadiusSlider from './Components/RadiusSlider/RadiusSlider';
 
 const App = () => {
   // State to toggle sidebar visibility
@@ -22,7 +24,8 @@ const App = () => {
   const [selectedCapacity, setSelectedCapacity] = useState([]); // Ensure this is defined
   const [origin, setOrigin] = useState(''); // Define the origin state
   const [destination, setDestination] = useState(''); // Define the destination state
-  const [pickupDate, setPickupDate] = useState(''); // Define the pickup date state
+  const [earliestPickupDate, setEarliestPickupDate] = useState(''); // Define the pickup date state
+  const [latestPickupDate, setLatestPickupDate] = useState('');
   const [dropoffDate, setDropoffDate] = useState(''); // Define the dropoff date state
   const [minMiles, setMinMiles] = useState(''); // Define the min miles state
   const [maxMiles, setMaxMiles] = useState(''); // Define the max miles state
@@ -38,7 +41,9 @@ const App = () => {
     setActiveButton(buttonIndex);
   };
 
-  
+  const handleAnywhereCheckbox = () => {
+
+  }
 
   // Handler for selecting a menu item in the sidebar
   const handleMenuItemClick = (item) => {
@@ -50,7 +55,8 @@ const App = () => {
     setSelectedCapacity([]);
     setOrigin('');
     setDestination('');
-    setPickupDate('');
+    setEarliestPickupDate('');
+    setLatestPickupDate('');
     setDropoffDate('');
     setMinMiles('');
     setMaxMiles('');
@@ -62,7 +68,7 @@ const App = () => {
     const searchData = {
         origin_city: origin,
         destination_city: destination,
-        earliest_start_date: pickupDate,
+        earliest_start_date: earliestPickupDate,
         latest_start_date: dropoffDate,
         transport_modes: selectedCapacity.join(','),  // Convert array to comma-separated string
       };
@@ -125,7 +131,7 @@ const App = () => {
 
         <div className="search-filter-container">
           <div className='dropdown-container'>
-            <h3 className="dropdown-title">Select an Option:</h3>
+            <h3 className="dropdown-title">Capacity Type:</h3>
             <Dropdown
              setSelectedCapacity= {setSelectedCapacity}
              selectedCapacity={selectedCapacity}/>
@@ -141,15 +147,28 @@ const App = () => {
                 value={origin}
                 onChange={(e) => setOrigin(e.target.value)}
               />
+              <Checkbox 
+                label = "anywhere"
+                onClick ={(e) => e.target.checked ? setOrigin('Anywhere') : null}/>
             </div>
-            <div className="input-row">
+            <div className="input-row-second">
               <input
                 type="date"
-                id="pickup-date"
-                value={pickupDate}
-                onChange={(e) => setPickupDate(e.target.value)}
+                id="earliest-pickup-date"
+                value={earliestPickupDate}
+                onChange={(e) => setEarliestPickupDate(e.target.value)}
+              />
+              <input
+                type="date"
+                id="latest-pickup-date"
+                value={latestPickupDate}
+                onChange={(e) => setLatestPickupDate(e.target.value)}
               />
             </div>
+          </div>
+
+          <div className = "input-group">
+            <RadiusSlider />
           </div>
 
           {/* Destination and Drop-off Date Group */}
@@ -163,8 +182,17 @@ const App = () => {
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
               />
+              <Checkbox 
+                label = "anywhere"
+                onClick ={(e) => e.target.checked ? setDestination('Anywhere') : null} />
             </div>
-            <div className="input-row">
+            <div className="input-row-second">
+              <input
+                type="date"
+                id="dropoff-date"
+                value={dropoffDate}
+                onChange={(e) => setDropoffDate(e.target.value)}
+              />
               <input
                 type="date"
                 id="dropoff-date"
