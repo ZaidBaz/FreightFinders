@@ -299,6 +299,12 @@ input, select {
   background-color: #0056b3;
 }
 
+.button-container-2{
+  margin-left: 250px;
+  align-items: center;
+
+}
+
 /* Responsive styling for smaller screens */
 @media (max-width: 768px) {
   .container {

@@ -11,7 +11,7 @@ const Navbar = () => {
         <a href="#search" className="search-link">Search Load #</a>
       </div>
       <div className="navbar-right">
-        <p>Welcome, Pearl</p>
+        <p>Welcome, Trent</p>
       </div>
     </nav>
   );
