@@ -26,26 +26,28 @@ const RadiusSlider = () => {
         <p>Pick up location radius</p>
         <p className="radius-value">{radius} miles</p>
       </div>
-      <input
-        type="range"
-        min="25"
-        max="250"
-        step="25"
-        value={radius}
-        onChange={handleSliderChange}
-        className="slider"
-      />
-      <div className="slider-labels">
-        <span>25 mi</span>
-        <span>50 mi</span>
-        <span>75 mi</span>
-        <span>200 mi</span>
-        <span>225 mi</span>
-        <span>250 mi</span>
+      <div className="slider-wrapper">
+        <input
+          type="range"
+          min="25"
+          max="250"
+          step="25"
+          value={radius}
+          onChange={handleSliderChange}
+          className="slider"
+        />
+        <div className="increment-decrement-buttons">
+          <button onClick={incrementRadius}>+</button>
+          <button onClick={decrementRadius}>−</button>
+        </div>
       </div>
-      <div className="increment-decrement-buttons">
-        <button onClick={incrementRadius}>+</button>
-        <button onClick={decrementRadius}>−</button>
+      <div className="slider-labels">
+        <span>25</span>
+        <span>50</span>
+        <span>75</span>
+        <span>200</span>
+        <span>225</span>
+        <span>250</span>
       </div>
     </div>
   );
