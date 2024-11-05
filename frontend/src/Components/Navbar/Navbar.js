@@ -1,16 +1,17 @@
 import React from "react";
-import "frontend\src\Components\navbar.css"; // 
+import "./Navbar.css"; // 
 const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-left">
         <h1 className="brand">
-          <span className="brand-primary">Schneider</span> <span className="brand-secondary">FreightPower</span>
+        <span className="brand-primary">Schneider</span>
+        <div className="brand-secondary">FreightPower</div>
         </h1>
         <a href="#search" className="search-link">Search Load #</a>
       </div>
       <div className="navbar-right">
-        <p>Welcome, Pearl</p>
+        <p>Welcome, Trent</p>
       </div>
     </nav>
   );

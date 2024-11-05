@@ -1,0 +1,17 @@
+.custom-search-button {
+  width: 8.5rem; /* Fixed width */
+  height:35px; /* Fixed height */
+  padding: 3px 5px;
+  font-size: 0.85rem;
+  color: #ffffff;
+  background-color: #FF5C14; /* Default button color */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); /* Darker shadow */
+  }
+
+  .custom-search-button:hover {
+    transform: scale(1.05); /* Slight scaling on hover */
+  }
