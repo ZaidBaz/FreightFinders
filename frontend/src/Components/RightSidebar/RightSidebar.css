@@ -1,0 +1,41 @@
+.sidebar {
+  position: fixed; /* Fixes the sidebar to the viewport */
+  right: 0; 
+  top: 0; 
+  height: 100vh; 
+  width: 82px; /* Adjust the width as needed */
+  background-color: #fff; 
+  display: flex; 
+  flex-direction: column; 
+  align-items: left; 
+  gap: 4rem; 
+  z-index: 1000; /* Ensure it stays above other elements */
+}
+
+.sidebar-list {
+  list-style: none; 
+  padding: 0; 
+  margin: 0; 
+  width: 100%; 
+  text-align: center; 
+}
+
+.sidebar-item {
+  font-size: 0.9rem; 
+  color: #333; 
+  cursor: pointer; 
+  display: flex; 
+  flex-direction: column; 
+  align-items: flex-start; 
+  margin: 60px 0; /* Add space between sidebar items */
+  font-size: 1rem; /* Standard text size */
+  color: black; 
+  text-align: left; 
+  margin-left: 20px; 
+}
+
+.sidebar-item .sidebar-icon {
+  color: #ff6600; /* Schneider's orange color */
+  display: flex; /* Optional: Ensures the icon is a flex item */
+  align-items: center; 
+}
