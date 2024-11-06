@@ -89,6 +89,21 @@ def radius_search(center_lat, center_lon, radius=5):
     response = requests.get(BASE_RADIUS_SEARCH_URL, params=params)
     return handle_response(response)
 
+def test_radius_search():
+    city_name = "Madison"
+    radius = 1  
+    # Get the latitude and longitude for the city
+    single_search_data = single_search(city_name)
+    locations = single_search_data.get("Locations", [])
+    if locations:
+        selected_coords = locations[0]["Coords"]
+        center_lat = selected_coords["Lat"]
+        center_lon = selected_coords["Lon"]
+        # Now, call radius_search with the obtained coordinates
+        print(radius_search(center_lat=center_lat, center_lon=center_lon, radius=radius))
+    else:
+        print("City not found.")
+
 def handle_response(response):
     """
     Utility function to handle API responses.
@@ -103,11 +118,12 @@ def handle_response(response):
     else:
         return {'error': f'{response.status_code} - {response.text}'}
 
-#  Prints can uncomment and do the others as needed
+#  uncomment these as needed
 if __name__ == "__main__":
-    print(single_search(query='53713'))  # Zip code search
-    #print(single_search(query='Green Bay'))  # City name search
-    #print(geocode_search(street='1 Independence Way', city='Princeton', state='NJ', postcode='08540'))
-    #print(reverse_geocode_search(latitude=40.958188, longitude=-75.163244))
-    #print(radius_search(center_lat=42.12345, center_lon=-76.12345, radius=5))ls
+   # print(single_search(query='53713'))  # Zip code search
+  #  print(single_search(query='Madison'))  # City name search
+   # print(geocode_search(street='1 Independence Way', city='Princeton', state='NJ', postcode='08540'))
+   # print(reverse_geocode_search(latitude=40.958188, longitude=-75.163244))
     
+   
+    test_radius_search()
