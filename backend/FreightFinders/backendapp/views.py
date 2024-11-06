@@ -9,9 +9,10 @@ from django.db.models import Max, OuterRef, Subquery, F, Q, Prefetch
 from concurrent.futures import ThreadPoolExecutor
 from .pc_miler_utils import single_search, geocode_search, reverse_geocode_search, radius_search
 
+
 # PC MILER VIEWS START HERE
 def single_search_view(request):
-    query = request.GET.get('query', '54115')  # Default zip code if not provided
+    query = request.GET.get('query', '54115')  # Default zip code as provided by PC Miler doc
     data = single_search(query=query)
     return JsonResponse(data)
 
@@ -30,12 +31,43 @@ def reverse_geocode_view(request):
     return JsonResponse(data)
 
 def radius_search_view(request):
-    center_lat = request.GET.get('center_lat')
-    center_lon = request.GET.get('center_lon')
+    city_name = request.GET.get('city_name')
     radius = request.GET.get('radius', 5)  # Default radius if not provided
+    
+    # If city_name is provided, use it to get the coordinates first
+    if city_name:
+        try:
+            # Get coordinates using single_search
+            single_search_data = single_search(city_name)
+            
+            # Select the first location in the list (if available)
+            locations = single_search_data.get("Locations", [])
+            if locations:
+                selected_coords = locations[0]["Coords"]
+            else:
+                return JsonResponse({"error": "No location found for the specified city"}, status=500)
+
+            center_lat = selected_coords["Lat"]
+            center_lon = selected_coords["Lon"]
+
+        except ValueError as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+    # If city_name is not provided, get latitude and longitude from request parameters
+    else:
+        center_lat = request.GET.get('center_lat')
+        center_lon = request.GET.get('center_lon')
+
+        # Check if latitude and longitude are provided
+        if not center_lat or not center_lon:
+            return JsonResponse({"error": "Either city name or center coordinates are required"}, status=400)
+
+    # Perform the radius search with the obtained or provided coordinates
     data = radius_search(center_lat=center_lat, center_lon=center_lon, radius=radius)
-    return JsonResponse(data)
+     # Wrap the result in a dictionary with a key, for example 'locations'
+    return JsonResponse({"locations": data})
 # PC MILER VIEWS END HERE
+
 
 def search_locations(request):
     # Get origin and destination input
@@ -45,6 +77,7 @@ def search_locations(request):
     destination_city_input = request.GET.get('destination_city', '').lower()
     destination_state_input = request.GET.get('destination_state', '').lower()
     destination_postal_code_input = request.GET.get('destination_postal_code', '').lower()
+
 
     # Check for 'anywhere' input
     origin_anywhere = origin_city_input == "anywhere" or origin_state_input == "anywhere" or origin_postal_code_input == "anywhere"
@@ -62,6 +95,7 @@ def search_locations(request):
             origin_query = origin_query.filter(state__iexact=origin_state_input)
         if origin_postal_code_input:
             origin_query = origin_query.filter(postal_code__iexact=origin_postal_code_input)
+
 
     max_sequence_subquery = (
         LoadStop.objects
@@ -86,7 +120,9 @@ def search_locations(request):
             destination_query = destination_query.filter(state__iexact=destination_state_input)
         if destination_postal_code_input:
             destination_query = destination_query.filter(postal_code__iexact=destination_postal_code_input)
-    
+
+     
+     
     origin_data = list(origin_query.values())
     destination_data = list(destination_query.values())
     origin_load_ids = {item['load_id'] for item in origin_data}

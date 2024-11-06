@@ -29,5 +29,6 @@ urlpatterns = [
     path('geocode/', views.geocode_search_view, name='geocode_search'),
     path('reverse-geocode/', views.reverse_geocode_view, name='reverse_geocode'),
     path('radius-search/', views.radius_search_view, name='radius_search'),
+   
     
 ]
