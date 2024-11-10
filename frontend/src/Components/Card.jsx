@@ -1,26 +1,22 @@
 import React from "react";
 
-const Card = () => {
+const Card = ({ loadId, transportMode, originCity, destinationCity, totalDistance, totalWeight }) => {
   return (
     <div style={styles.cardContainer}>
       <div style={styles.infoSection}>
-        <p style={styles.infoId}>1000534119</p>
-        <p style={styles.infoText}>189 Miles</p>
-        <p style={styles.infoText}>Power Only</p>
-        <p style={styles.infoText}>22,000 lbs</p>
+        <p style={styles.infoId}>Load ID: {loadId}</p>
+        <p style={styles.infoText}>Distance: {totalDistance} Miles</p>
+        <p style={styles.infoText}>Mode: {transportMode}</p>
+        <p style={styles.infoText}>Weight: {totalWeight} lbs</p>
       </div>
 
       <div style={styles.detailsSection}>
         <div style={styles.locationHeader}>
           <span style={styles.dot}></span>
-          <h2 style={styles.locationTitle}>GREEN BAY, WI</h2>
+          <h2 style={styles.locationTitle}>{originCity}</h2>
         </div>
-        <p style={styles.dateText}>Sep 28, 7 am - Sep 29, 1 am</p>
-        <p style={styles.taskText}>Drop Empty Trailer, Pick Up Loaded Trailer</p>
-
-        <h2 style={styles.locationTitle}>GLENVIEW, IL</h2>
-        <p style={styles.dateText}>Oct 28, 7 am - Sep 29, 1 am</p>
-        <p style={styles.taskText}>Drop Empty Trailer, Pick Up Loaded Trailer</p>
+        <p style={styles.taskText}>to</p>
+        <h2 style={styles.locationTitle}>{destinationCity}</h2>
       </div>
 
       <button style={styles.button}>CONTACT TO BOOK</button>
@@ -32,14 +28,14 @@ const styles = {
   cardContainer: {
     marginTop: "15px",
     display: "flex",
-    boxShadow:" 0 4px 8px rgba(0, 0, 0, 0.4)", /* Darker shadow */
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)",
     flexDirection: "column",
-    width: "300px",
-    // border: "1px solid #d2a6ff",
+    width: "100%",  // Use full width of the parent container
+    maxWidth: "400px",  // Optional: Set a max width for large screens
     borderRadius: "8px",
     padding: "16px",
     fontFamily: "Arial, sans-serif",
-    position: "relative",
+    backgroundColor: "white",  // Ensure card background is white
   },
   infoSection: {
     textAlign: "left",
@@ -72,11 +68,6 @@ const styles = {
     margin: "0",
     fontWeight: "bold",
     fontSize: "16px",
-  },
-  dateText: {
-    margin: "0",
-    fontSize: "14px",
-    color: "#555",
   },
   taskText: {
     margin: "4px 0 12px",
