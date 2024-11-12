@@ -1,4 +1,14 @@
 .checkbox-wrapper {
     font-family: Arial;
     font-size: 10px;
+    display: flex;
+    align-items: center; /* Centers items vertically */
+}
+
+.checkbox-wrapper input {
+    margin: 0; /* Remove any extra margin */
+}
+
+.checkbox-wrapper label {
+    margin-left: 5px; /* Adjust the spacing as needed */
 }
