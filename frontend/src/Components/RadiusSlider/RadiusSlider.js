@@ -1,38 +1,42 @@
 // RadiusSlider.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './RadiusSlider.css';
 
-const RadiusSlider = () => {
-  const [radius, setRadius] = useState(25); // Initial value of the slider
+const RadiusSlider = ({ label, inputValue, setInputValue }) => {
+
+//   useEffect(() => {
+//     setInputValue(0);
+// }, []); 
 
   // Update slider value
   const handleSliderChange = (event) => {
-    setRadius(Number(event.target.value));
+    setInputValue(Number(event.target.value))
+    // setRadius(Number(event.target.value));
   };
 
   // Increment the slider value
   const incrementRadius = () => {
-    setRadius((prev) => (prev < 250 ? prev + 25 : prev));
+    setInputValue((prev) => (prev < 250 ? prev + 25 : prev));
   };
 
   // Decrement the slider value
   const decrementRadius = () => {
-    setRadius((prev) => (prev > 25 ? prev - 25 : prev));
+    setInputValue((prev) => (prev >= 25 ? prev - 25 : prev));
   };
 
   return (
     <div className="radius-slider-container">
       <div className="radius-info">
-        <p>Pick up location radius</p>
-        <p className="radius-value">{radius} miles</p>
+        <p>{label}</p>
+        <p className="radius-value">{inputValue} miles</p>
       </div>
       <div className="slider-wrapper">
         <input
           type="range"
-          min="25"
+          min="0"
           max="250"
           step="25"
-          value={radius}
+          value={inputValue}
           onChange={handleSliderChange}
           className="slider"
         />
@@ -42,12 +46,13 @@ const RadiusSlider = () => {
         </div>
       </div>
       <div className="slider-labels">
+        <span></span>
         <span>25</span>
-        <span>50</span>
         <span>75</span>
-        <span>200</span>
+        <span>125</span>
+        <span>175</span>
         <span>225</span>
-        <span>250</span>
+        <span></span>
       </div>
     </div>
   );

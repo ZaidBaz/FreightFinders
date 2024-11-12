@@ -23,6 +23,8 @@ const App = () => {
   const [destinationEndDate, setDestinationEndDate] = useState(''); // Destination end date
   const [minMiles, setMinMiles] = useState('');
   const [maxMiles, setMaxMiles] = useState('');
+  const [originRadius, setOriginRadius] = useState(250);
+  const [destinationRadius, setDestinationRadius] = useState(250);
   const [results, setResults] = useState([]); // State for search results
 
   const toggleSidebar = () => setIsSidebarVisible((prevState) => !prevState);
@@ -51,7 +53,11 @@ const App = () => {
       destination_start_date: destinationStartDate,
       destination_end_date: destinationEndDate,
       transport_modes: selectedCapacity.join(','),
+      origin_radius: originRadius,
+      destination_radius: destinationRadius
     };
+
+    console.log(searchData);
     const queryParams = new URLSearchParams(searchData).toString();
 
     try {
@@ -93,82 +99,89 @@ const App = () => {
           <Card loadId="1000534120" transportMode="Power Only" originCity="MILWAUKEE, WI" destinationCity="CHICAGO, IL" totalDistance="94" totalWeight="25000" />
         </div>
 
-        {/* Search Filter and Results Section */}
-        <div className="search-filter-container">
-          <div className="dropdown-container">
-            <h3 className="dropdown-title">Capacity Type:</h3>
-            <Dropdown setSelectedCapacity={setSelectedCapacity} selectedCapacity={selectedCapacity} />
-          </div>
-
-          {/* Origin and Pickup Date Group */}
-          <div className="input-group">
-            <div className="input-row">
-              <label htmlFor="origin" className="form-label">Origin</label>
-              <input
-                type="text"
-                id="origin"
-                placeholder="origin"
-                value={origin}
-                onChange={(e) => setOrigin(e.target.value)}
-              />
-              <Checkbox label="anywhere" onClick={(e) => e.target.checked ? setOrigin('Anywhere') : null} />
+        <div className = "search-results-wrapper">
+          {/* Search Filter and Results Section */}
+          <div className="search-filter-container">
+            <div className="dropdown-container">
+              <h3 className="dropdown-title">Capacity Type:</h3>
+              <Dropdown setSelectedCapacity={setSelectedCapacity} selectedCapacity={selectedCapacity} />
             </div>
-            <div className="input-row-second">
-              <input
-                type="date"
-                id="earliest-pickup-date"
-                value={earliestPickupDate}
-                onChange={(e) => setEarliestPickupDate(e.target.value)}
-              />
-              <input
-                type="date"
-                id="latest-pickup-date"
-                value={latestPickupDate}
-                onChange={(e) => setLatestPickupDate(e.target.value)}
-              />
+
+            {/* Origin and Pickup Date Group */}
+            <div className="input-group">
+              <div className="input-row">
+                <label htmlFor="origin" className="form-label">Origin</label>
+                <input
+                  type="text"
+                  id="origin"
+                  placeholder="origin"
+                  value={origin}
+                  onChange={(e) => setOrigin(e.target.value)}
+                />
+                <Checkbox label="anywhere" onClick={(e) => e.target.checked ? setOrigin('Anywhere') : null} />
+              </div>
+              <div className="input-row-second">
+                <input
+                  type="date"
+                  id="earliest-pickup-date"
+                  value={earliestPickupDate}
+                  onChange={(e) => setEarliestPickupDate(e.target.value)}
+                />
+                <input
+                  type="date"
+                  id="latest-pickup-date"
+                  value={latestPickupDate}
+                  onChange={(e) => setLatestPickupDate(e.target.value)}
+                />
+              </div>
             </div>
-          </div>
 
-          <div className="input-group">
-            <RadiusSlider />
-          </div>
-
-          {/* Destination and Destination Date Range Group */}
-          <div className="input-group">
-            <div className="input-row">
-              <label htmlFor="destination" className="form-label">Destination</label>
-              <input
-                type="text"
-                id="destination"
-                placeholder="destination"
-                value={destination}
-                onChange={(e) => setDestination(e.target.value)}
-              />
-              <Checkbox label="anywhere" onClick={(e) => e.target.checked ? setDestination('Anywhere') : null} />
+            <div className="input-group">
+              <RadiusSlider label="Origin Radius" inputValue={originRadius} setInputValue={setOriginRadius}/>
             </div>
-            <div className="input-row-second">
-              <input
-                type="date"
-                id="destination-start-date"
-                placeholder="Start Date"
-                value={destinationStartDate}
-                onChange={(e) => setDestinationStartDate(e.target.value)}
-              />
-              <input
-                type="date"
-                id="destination-end-date"
-                placeholder="End Date"
-                value={destinationEndDate}
-                onChange={(e) => setDestinationEndDate(e.target.value)}
-              />
+
+            {/* Destination and Destination Date Range Group */}
+            <div className="input-group">
+              <div className="input-row">
+                <label htmlFor="destination" className="form-label">Destination</label>
+                <input
+                  type="text"
+                  id="destination"
+                  placeholder="destination"
+                  value={destination}
+                  onChange={(e) => setDestination(e.target.value)}
+                />
+                <Checkbox label="anywhere" onClick={(e) => e.target.checked ? setDestination('Anywhere') : null} />
+              </div>
+              <div className="input-row-second">
+                <input
+                  type="date"
+                  id="destination-start-date"
+                  placeholder="Start Date"
+                  value={destinationStartDate}
+                  onChange={(e) => setDestinationStartDate(e.target.value)}
+                />
+                <input
+                  type="date"
+                  id="destination-end-date"
+                  placeholder="End Date"
+                  value={destinationEndDate}
+                  onChange={(e) => setDestinationEndDate(e.target.value)}
+                />
+              </div>
             </div>
+
+            <div className="input-group">
+              <RadiusSlider label="Destination Radius" inputValue={destinationRadius} setInputValue={setDestinationRadius}/>
+            </div>
+
+            <div className="button-container-2">
+              <Search label="Search" onClick={handleSearch} isActive={activeButton === 0} />
+            </div>
+          {/* OVER HERE */}  
           </div>
 
-          <div className="button-container-2">
-            <Search label="Search" onClick={handleSearch} isActive={activeButton === 0} />
-          </div>
-
-          {/* Search Results Section */}
+            {/* Search Results Section */}
           <div className="results-section">
             <h2>Search Results</h2>
             <div className="results-card-container">
@@ -190,6 +203,7 @@ const App = () => {
             </div>
           </div>
         </div>
+        {/* </div> */}
       </div>
     </div>
   );
