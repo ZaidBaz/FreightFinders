@@ -145,7 +145,7 @@
 
 .input-group input {
   flex: 1; /* Allow the input to take the remaining space */
-  margin-right: 10px; /* Add some space between input fields */
+  margin-right: 10px; /* add space between input fields */
 }
 
 .miles-section {
