@@ -112,7 +112,9 @@
   flex-direction: column; /* Stack children vertically */
   /* padding: 05px; Add some padding */
   margin: 0 auto; /* Center the main content */
+  margin-top: 2.8rem; /* Match the navbar height */
   padding-bottom: 50px;
+
 }
 
 .search-form {
@@ -198,6 +200,7 @@
   position: absolute; /* Use absolute positioning */
   right: 0; /* Stick to the right edge */
   top: 35px; /* Adjust as needed to control vertical positioning */
+  position: fixed;
 }
 
 .search-filter-container {
