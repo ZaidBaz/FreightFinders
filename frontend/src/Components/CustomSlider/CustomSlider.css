@@ -1,0 +1,48 @@
+.custom-slider-container {
+  display: flex;
+  flex-direction: column; /* Stack the title and slider row */
+  align-items: center;
+  padding: 20px;
+  width: 85%;
+  margin: 0 auto;
+}
+
+.title-row {
+  display: flex;
+  /* justify-content: center; Center align the title */
+  width: 100%;
+}
+
+.slider-title {
+  font-size: 14px; /* Adjust font size for the title */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  sans-serif;
+}
+
+.slider-row {
+  display: flex; /* Align slider and buttons horizontally */
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 15px; /* Add space between slider and buttons */
+}
+
+.increment-decrement-buttons {
+  display: flex;
+  flex-direction: column; /* Stack buttons vertically */
+  align-items: center;
+  margin-left: 15px;
+}
+
+.increment-decrement-buttons button {
+  width: 40px;
+  height: 40px;
+  background-color: #f47329;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  margin: 5px 0;
+  border-radius: 4px;
+}

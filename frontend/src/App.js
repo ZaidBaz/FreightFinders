@@ -8,6 +8,7 @@ import Dropdown from './Components/Dropdown/Dropdown.js';
 import Card from './Components/Card';
 import Checkbox from './Components/Checkbox/Checkbox';
 import RadiusSlider from './Components/RadiusSlider/RadiusSlider';
+import CustomSlider from './Components/CustomSlider/CustomSlider';
 
 const App = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
@@ -54,10 +55,10 @@ const App = () => {
       destination_end_date: destinationEndDate,
       transport_modes: selectedCapacity.join(','),
       origin_radius: originRadius,
-      destination_radius: destinationRadius
+      destination_radius: destinationRadius,
+      max_distance: maxMiles
     };
 
-    console.log(searchData);
     const queryParams = new URLSearchParams(searchData).toString();
 
     try {
@@ -118,7 +119,7 @@ const App = () => {
                   value={origin}
                   onChange={(e) => setOrigin(e.target.value)}
                 />
-                <Checkbox label="anywhere" onClick={(e) => e.target.checked ? setOrigin('Anywhere') : null} />
+                <Checkbox label="Anywhere" onClick={(e) => e.target.checked ? setOrigin('Anywhere') : null} />
               </div>
               <div className="input-row-second">
                 <input
@@ -137,7 +138,7 @@ const App = () => {
             </div>
 
             <div className="input-group">
-              <RadiusSlider label="Origin Radius" inputValue={originRadius} setInputValue={setOriginRadius}/>
+              <CustomSlider label = "Origin location radius" min = "25" max = "250" step = "25" defaultSliderVal = "25" setInputValue={setOriginRadius}/>
             </div>
 
             {/* Destination and Destination Date Range Group */}
@@ -151,7 +152,7 @@ const App = () => {
                   value={destination}
                   onChange={(e) => setDestination(e.target.value)}
                 />
-                <Checkbox label="anywhere" onClick={(e) => e.target.checked ? setDestination('Anywhere') : null} />
+                <Checkbox label="Anywhere" onClick={(e) => e.target.checked ? setDestination('Anywhere') : null} />
               </div>
               <div className="input-row-second">
                 <input
@@ -172,13 +173,22 @@ const App = () => {
             </div>
 
             <div className="input-group">
-              <RadiusSlider label="Destination Radius" inputValue={destinationRadius} setInputValue={setDestinationRadius}/>
+              <CustomSlider label = "Drop off location radius" min = "25" max = "250" step = "25" defaultSliderVal = "25" setInputValue={setDestinationRadius}/> 
+            </div>
+
+            <div className = "input-group">
+              <div className = "input-row">
+                <label htmlFor = "distance" className = "form-label">Miles to be travelled</label>
+              </div>
+            </div>
+
+            <div className = "input-group">
+              <CustomSlider min = "100" max = "1000" step = "100" defaultSliderVal = "100" setInputValue={setMaxMiles}/>
             </div>
 
             <div className="button-container-2">
               <Search label="Search" onClick={handleSearch} isActive={activeButton === 0} />
             </div>
-          {/* OVER HERE */}  
           </div>
 
             {/* Search Results Section */}
