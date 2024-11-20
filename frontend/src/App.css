@@ -99,6 +99,7 @@
   margin: 0 auto; /* Center the container */
   gap: 20px; /* Space between the filter and results */
   padding: 20px;
+   margin-top: 20px;
 }
 
 /* Main Content styling */
@@ -114,6 +115,7 @@
   margin: 0 auto; /* Center the main content */
   margin-top: 2.8rem; /* Match the navbar height */
   padding-bottom: 50px;
+  padding: 10px;
 
 }
 
@@ -484,6 +486,7 @@ input[type="date"] {
   width: 100%; /* Full width */
   max-width: 1600px; /* Optional max width */
   margin: 0 auto; /* Center container */
+  padding-top: 10px;
 }
 
 /* input[type="text"],

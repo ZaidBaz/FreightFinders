@@ -1,48 +1,39 @@
 .sidebar {
-    right: 0;
-    top: 0;
-    height: 100vh;
-    width: 85px;
-    background-color: #fff;
-    /* border-left: 1px solid #ccc;
-    padding-top: 1rem; */
-    display: flex;
-    flex-direction: column;
-    align-items: left;
-    gap: 4rem;
-    //position: fixed;
-
-  }
+  position: fixed; /* Fix the sidebar to its position */
+  left: 0;         /* Align it to the left of the viewport */
+  top: 0;          /* Align it to the top of the viewport */
+  height: 100vh;   /* Occupy the full height of the viewport */
+  width: 75px;     /* Sidebar width */
+  background-color: #fff; /* Background color */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align items to the left */
+  gap: 4rem;        /* Space between elements */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for aesthetics */
+  z-index: 1;    /* Ensure the sidebar appears behind the navbar */
+}
   
 .sidebar-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    width: 100%;
-    text-align: center;
-    position: fixed;
-  }
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
   
 .sidebar-item {
-    font-size: 0.9rem;
-    margin-left: 0.5rem;
-    color: #333;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    margin: 60px 0; /* Add space between sidebar items */
-    font-size: 0.9rem; /* changed to fit sidebar */
-    cursor: pointer;
-    color: black;
-    text-align: left; 
-    margin-left: 02px;
-  }
+  font-size: 0.9rem;
+  color: #333;
+  cursor: pointer;
+  margin: 60px 0;
+  margin-left: 8px; /* Adjust for proper alignment */
+  text-align: left;
+}
   
 .sidebar-item .sidebar-icon {
-    color: #ff6600; /* Schneider's orange color */
-    margin-left: 0.7rem;
-    display: flex; /* Optional: Ensures the icon is a flex item */
-    align-items: center;
-  }
+  color: #ff6600; /* Schneider's orange color */
+  margin-left: 0.7rem;
+  display: flex;
+  align-items: center;
+}
   
