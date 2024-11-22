@@ -93,29 +93,26 @@
 
 .search-results-wrapper {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   width: 100%;
   max-width: 1600px;
   margin: 0 auto; /* Center the container */
   gap: 20px; /* Space between the filter and results */
   padding: 20px;
-   margin-top: 20px;
+
 }
 
 /* Main Content styling */
 .main-content {
-  flex: 1;
   width: 100vw; /* Full viewport width */
   min-height: 100vh;
   height: auto;
   background-color: #E8E5E1;
-  display: flex; /* Enable Flexbox layout for alignment */
-  flex-direction: column; /* Stack children vertically */
   /* padding: 05px; Add some padding */
   margin: 0 auto; /* Center the main content */
   margin-top: 2.8rem; /* Match the navbar height */
   padding-bottom: 50px;
-  padding: 10px;
 
 }
 
@@ -199,7 +196,6 @@
   width: 332px; /* Optional: Set max width for card */
   height: 615px;
   margin-right: 10px;
-  position: absolute; /* Use absolute positioning */
   right: 0; /* Stick to the right edge */
   top: 35px; /* Adjust as needed to control vertical positioning */
   position: fixed;
@@ -207,7 +203,7 @@
 
 .search-filter-container {
   /* flex-direction: column; */
-  background-color: white; 
+  background-color: white;
   border-radius: 5px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   padding: 16px;
@@ -217,7 +213,7 @@
   position: absolute;
   left: 90px;
   top:95px;
-} 
+}
 
 .dropdown-title {
   left:20px;
@@ -305,7 +301,7 @@ input, select {
   align-items: center;
   margin-bottom: 50px;
 
-} 
+}
 
 /* Responsive styling for smaller screens */
 @media (max-width: 768px) {
@@ -453,11 +449,11 @@ input[type="date"] {
 }
 
 .results-card {
-  background-color: white; 
+  background-color: white;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 20px;
-  width: 100%; 
+  width: 100%;
 }
 
 .results-section {
@@ -486,7 +482,6 @@ input[type="date"] {
   width: 100%; /* Full width */
   max-width: 1600px; /* Optional max width */
   margin: 0 auto; /* Center container */
-  padding-top: 10px;
 }
 
 /* input[type="text"],
@@ -495,4 +490,4 @@ input[type="date"] {
   /* padding: 6px;
   font-size: 14px;
   flex: 2;
-} */ 
+} */

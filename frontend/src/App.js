@@ -9,6 +9,7 @@ import Card from './Components/Card';
 import Checkbox from './Components/Checkbox/Checkbox';
 import RadiusSlider from './Components/RadiusSlider/RadiusSlider';
 import CustomSlider from './Components/CustomSlider/CustomSlider';
+import CityAutoComplete from './Components/Autofill/CityAutoComplete';
 
 const App = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
@@ -43,6 +44,7 @@ const App = () => {
     setMinMiles('');
     setMaxMiles('');
   };
+
 
   const handleSearch = async (event) => {
     event.preventDefault();
@@ -112,13 +114,7 @@ const App = () => {
             <div className="input-group">
               <div className="input-row">
                 <label htmlFor="origin" className="form-label">Origin</label>
-                <input
-                  type="text"
-                  id="origin"
-                  placeholder="origin"
-                  value={origin}
-                  onChange={(e) => setOrigin(e.target.value)}
-                />
+                <CityAutoComplete onCitySelect={(city) => setOrigin(city)} />
                 <Checkbox label="Anywhere" onClick={(e) => e.target.checked ? setOrigin('Anywhere') : null} />
               </div>
               <div className="input-row-second">
@@ -145,13 +141,7 @@ const App = () => {
             <div className="input-group">
               <div className="input-row">
                 <label htmlFor="destination" className="form-label">Destination</label>
-                <input
-                  type="text"
-                  id="destination"
-                  placeholder="destination"
-                  value={destination}
-                  onChange={(e) => setDestination(e.target.value)}
-                />
+                <CityAutoComplete onCitySelect={(city) => setDestination(city)} />
                 <Checkbox label="Anywhere" onClick={(e) => e.target.checked ? setDestination('Anywhere') : null} />
               </div>
               <div className="input-row-second">
@@ -171,6 +161,8 @@ const App = () => {
                 />
               </div>
             </div>
+
+
 
             <div className="input-group">
               <CustomSlider label = "Drop off location radius" min = "25" max = "250" step = "25" defaultSliderVal = "25" setInputValue={setDestinationRadius}/> 
