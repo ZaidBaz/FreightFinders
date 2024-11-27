@@ -217,8 +217,8 @@
 
 .dropdown-title {
   left:20px;
-  width:200px;
-  font-size: 14px;     /* Adjust the font size as needed */
+  width:175px;
+  font-size: 24px;     /* Adjust the font size as needed */
 }
 
 .dropdown-container{
@@ -460,7 +460,7 @@ input[type="date"] {
   position: relative;
   margin-top: 110px; /* Adjust this value to push it further down */
   left: 79px; /* Optional: Adjust horizontal alignment */
-  width: 48%; /* Maintain the width for proper layout */
+  width: 64%; /* Maintain the width for proper layout */
   background-color: white;
   border-radius: 5px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
@@ -472,7 +472,7 @@ input[type="date"] {
   border-radius: 5px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   padding: 16px;
-  width: 48%; /* Adjust to fit side by side */
+  width: 64%; /* Adjust to fit side by side */
 }
 
 .results-card-container {
