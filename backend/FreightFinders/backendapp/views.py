@@ -51,12 +51,24 @@ def radius_search_view(request):
 
 def search_locations(request):
     # Get origin and destination input
-    origin_city_input = request.GET.get('origin_city', '').lower()
-    origin_state_input = request.GET.get('origin_state', '').lower()
+    origin_input = request.GET.get('origin', '').lower()  
+    destination_input = request.GET.get('destination', '').lower() 
+    #origin_city_input = request.GET.get('origin_city', '').lower()
+    #origin_state_input = request.GET.get('origin_state', '').lower()
     origin_postal_code_input = request.GET.get('origin_postal_code', '').lower()
-    destination_city_input = request.GET.get('destination_city', '').lower()
-    destination_state_input = request.GET.get('destination_state', '').lower()
+    #destination_city_input = request.GET.get('destination_city', '').lower()
+    #destination_state_input = request.GET.get('destination_state', '').lower()
     destination_postal_code_input = request.GET.get('destination_postal_code', '').lower()
+     # Split the city and state input based on a comma
+    origin_city_input, origin_state_input = origin_input.split(',') if origin_input else ('', '')
+    destination_city_input, destination_state_input = destination_input.split(',') if destination_input else ('', '')
+
+    # Trim extra spaces
+    origin_city_input = origin_city_input.strip()
+    origin_state_input = origin_state_input.strip()
+    destination_city_input = destination_city_input.strip()
+    destination_state_input = destination_state_input.strip()
+
 
     #Check for origin radius and destination radius
     origin_radius = request.GET.get('origin_radius', None) 
