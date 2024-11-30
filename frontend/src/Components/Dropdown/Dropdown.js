@@ -23,7 +23,6 @@ const Dropdown = ({setSelectedCapacity,selectedCapacity}) => {
   // };
 
   const handleCapacityChange = (event) => {
-    console.log("Pearl Bharti123",event.target.value)
     const value = event.target.value;
     setSelectedCapacity((prev) =>
       prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value] // Corrected parentheses here

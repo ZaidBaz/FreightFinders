@@ -106,7 +106,7 @@ const App = () => {
           {/* Search Filter and Results Section */}
           <div className="search-filter-container">
             <div className="dropdown-container">
-              <h3 className="dropdown-title">Capacity Type:</h3>
+              <h3 className="dropdown-title">Capacity Type</h3>
               <Dropdown setSelectedCapacity={setSelectedCapacity} selectedCapacity={selectedCapacity} />
             </div>
 

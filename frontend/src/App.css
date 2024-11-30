@@ -97,9 +97,11 @@
   justify-content: space-between;
   width: 100%;
   max-width: 1600px;
-  margin: 0 auto; /* Center the container */
-  gap: 20px; /* Space between the filter and results */
-  padding: 20px;
+  /* margin: 0 auto; /* Center the container */
+  /*gap: 20px; /* Space between the filter and results */
+  padding: 20px; 
+  gap: 0; /* If you're using a flexbox or grid, remove the gap */
+  margin: 0; /* Ensure no margins are applied */
 
 }
 
@@ -130,22 +132,17 @@
   flex: 2; /* Make the right section take less space */
 }
 
-.input-group {
+/* .input-group {
   display: flex;
   margin-bottom: 10px;
   align-items: left;
-  margin-bottom: 15px; /* Spacing between the input groups */
-}
+  margin-bottom: 0px; /* Spacing between the input groups */
+/*} */
 
-.input-group label {
-  flex: 0 0 150px; /* Adjust this width as needed */
-  margin-right: 10px; /* Space between label and input */
-}
-
-.input-group input {
+/* .input-group input {
   flex: 1; /* Allow the input to take the remaining space */
-  margin-right: 10px; /* add space between input fields */
-}
+  /*margin-right: 10px; /* add space between input fields */
+/* } */
 
 .miles-section {
   display: flex; /* Flexbox for miles inputs */
@@ -208,14 +205,17 @@
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   padding: 16px;
   width: 100%;
-  height: 850px;
+  height: 680px;
   margin-left: 8px;
   position: absolute;
   left: 90px;
   top:95px;
+  margin-bottom: 0px;
 }
 
 .dropdown-title {
+  margin-top: 0px;
+  margin-bottom: 10px;
   left:20px;
   width:175px;
   font-size: 24px;     /* Adjust the font size as needed */
@@ -257,13 +257,6 @@
   justify-content: space-between;
 }
 
-/* Label styling */
-.form-label {
-  flex: 3;
-  font-weight: bold;
-  color: black;
-}
-
 input[type="checkbox"] {
   margin-right: 10px;
 }
@@ -299,7 +292,7 @@ input, select {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 50px;
+  margin-bottom: 0px;
 
 }
 
@@ -371,12 +364,12 @@ input, select {
 .input-group {
   display: flex;
   align-items: center;
-  margin-bottom: 15px; /* Spacing between the input groups */
+  margin-bottom: 0px; /* Spacing between the input groups */
 }
 
 .input-group label {
   flex: 0 0 150px;
-  margin-right: 05px;
+  margin-right: 15.75%;
 }
 input[type="date"] {
     padding: 8px;
@@ -404,8 +397,8 @@ input[type="date"] {
   flex: 5;
   display: flex;
   align-items: left;
-  /* justify-content: space-between; */
   margin-bottom: 05px;
+  white-space: nowrap; 
 }
 
 .input-row input {
@@ -433,9 +426,9 @@ input[type="date"] {
 }
 
 .form-label {
-  width: 30%;
+  width: 50%;
   margin-right: 2px;
-  font-size: 14px;
+  font-size: 24px;
   font-weight: bold;
 }
 
@@ -458,7 +451,7 @@ input[type="date"] {
 
 .results-section {
   position: relative;
-  margin-top: 110px; /* Adjust this value to push it further down */
+  margin-top: -51px; /* Adjust this value to push it further down */
   left: 79px; /* Optional: Adjust horizontal alignment */
   width: 64%; /* Maintain the width for proper layout */
   background-color: white;
@@ -483,11 +476,3 @@ input[type="date"] {
   max-width: 1600px; /* Optional max width */
   margin: 0 auto; /* Center container */
 }
-
-/* input[type="text"],
-input[type="date"] {
-  width: 80%; /* Adjust width according to your design */
-  /* padding: 6px;
-  font-size: 14px;
-  flex: 2;
-} */

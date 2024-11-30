@@ -2,9 +2,9 @@
   display: flex;
   flex-direction: column; /* Stack the title and slider row */
   align-items: center;
-  padding: 20px;
+  padding: 10px;
   width: 85%;
-  margin: 0 auto;
+  margin: 0 auto 0 28%;
 }
 
 .title-row {
