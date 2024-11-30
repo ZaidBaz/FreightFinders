@@ -3,7 +3,8 @@
     width: 200px;
     font-family: Arial, sans-serif;
     font-size: 11px;
-    top:10px;
+    top: 3px;
+    left: 10%;
   }
   
   .dropdown-header {

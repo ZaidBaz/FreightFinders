@@ -1,4 +1,5 @@
 import requests
+import random
 from django.conf import settings
 
 BASE_SINGLE_SEARCH_URL = 'https://singlesearch.alk.com/NA/api/search'
@@ -54,7 +55,7 @@ def radius_search(center_lat, center_lon, radius=5):
         'center': f"{center_lon},{center_lat}",
         'radius': radius,
         'radiusUnits': 'Miles',
-        'poiCategories': 'All',
+        'poiCategories': '2',
         'region': 'NA',
         'dataset': 'Current'
     }
@@ -119,18 +120,59 @@ def fetch_nearby_zipcodes_with_road_check(lat, lon, radius, valid_zip_codes):
     if 'error' in air_mile_results:
         return []
 
+    filtered_results = list(filter(lambda x: x['POILocation']['Address']['Zip'][:5] in valid_zip_codes, air_mile_results))
     valid_zip_codes_with_road_miles = []
-    for location in air_mile_results.get('Locations', []):
-        zip_code = location.get('postalCode')
-        if zip_code in valid_zip_codes:
-            # Get the coordinates for the zip code
-            destination_coords = fetch_coordinates_from_zip(zip_code)
-            if destination_coords:
-                # Calculate the road miles between the origin and destination coordinates
-                road_distance_result = check_road_miles(lat, lon, destination_coords[0], destination_coords[1])
-                if 'CalcMiles' in road_distance_result:
-                    road_miles = road_distance_result['CalcMiles']
-                    if road_miles <= radius:
-                        valid_zip_codes_with_road_miles.append(zip_code)
+
+    print(filtered_results)
+
+    for location in filtered_results:
+
+        destination_coords = location['POILocation']['Coords']
+
+
+        road_distance_result = check_road_miles(lat, lon, destination_coords['Lat'], destination_coords['Lon'])
+        print(road_distance_result)
+        # if(radius >= 100):
+            
+        #     if(zip_code != '' and zip_code[:3] in visited):
+        #         visited[zip_code[:3]].append((zip_code, destination_coords))
+        #     elif(zip_code != ''):
+        #         visited[zip_code[:3]] = [(zip_code, destination_coords)]
+
+        # else:
+            
+        #     if(zip_code != '' and zip_code[:4] in visited):
+        #         visited[zip_code[:4]].append((zip_code, destination_coords))
+        #     elif(zip_code != ''):
+        #         visited[zip_code[:4]] = [(zip_code, destination_coords)]
+
+
+    # for zip_group in visited:
+    #     num_zips_in_group = len(visited[zip_group])
+    #     random_zip = random.randint(0, num_zips_in_group - 1)
+
+    #     road_distance_result = check_road_miles(lat, lon, visited[zip_group][random_zip][1]['Lat'], visited[zip_group][random_zip][1]['Lon'])
+        # print(random_number)
+    # print(visited)
+
+    # for location in air_mile_results:
+    #     zip_code = location['POILocation']['Address']['Zip']
+    #     destination_coords = location['POILocation']['Coords']
+    #     # destination_coords = fetch_coordinates_from_zip(zip_code)
+    #     if destination_coords:
+    #         # print(lat, lon)
+    #         # print(destination_coords['Lat'], destination_coords['Lon'])
+    #         # Calculate the road miles between the origin and destination coordinates
+    #         road_distance_result = check_road_miles(lat, lon, destination_coords['Lat'], destination_coords['Lon'])
+    #         # print(road_distance_result)
+    #         if(counter > 1):
+    #             break
+    #         counter+= 1
+    #         # print(counter)
+    #         # if 'CalcMiles' in road_distance_result:
+    #         #     road_miles = road_distance_result['CalcMiles']
+    #         #     if road_miles <= radius:
+    #         #         valid_zip_codes_with_road_miles.append(zip_code)
     
+    print("DONE")
     return valid_zip_codes_with_road_miles

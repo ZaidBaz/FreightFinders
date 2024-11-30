@@ -122,17 +122,18 @@ def search_locations(request):
     if origin_radius:
         origin_geocode = geocode_search(postcode=origin_postal_code_input)
         if 'error' not in origin_geocode:
-            origin_lat = origin_geocode['latitude']
-            origin_lon = origin_geocode['longitude']
-            origin_valid_zip_codes = fetch_nearby_zipcodes_with_road_check(origin_lat, origin_lon, float(origin_radius), [])
+            existing_origins = LoadStop.objects.filter(stop_sequence=1).values('city', 'state', 'postal_code').distinct()
+            origin_lat = origin_geocode[0]['Coords']['Lat']
+            origin_lon = origin_geocode[0]['Coords']['Lon']
+            origin_valid_zip_codes = fetch_nearby_zipcodes_with_road_check(origin_lat, origin_lon, float(origin_radius), {entry['postal_code'][:5] for entry in existing_origins})
             origin_query = origin_query.filter(postal_code__in=origin_valid_zip_codes)    
 
     # Radius-based destination location search
     if destination_radius:
         destination_geocode = geocode_search(postcode=destination_postal_code_input)
         if 'error' not in destination_geocode:
-            destination_lat = destination_geocode['latitude']
-            destination_lon = destination_geocode['longitude']
+            destination_lat = destination_geocode[0]['Coords']['Lat']
+            destination_lon = destination_geocode[0]['Coords']['Lon']
             destination_valid_zip_codes = fetch_nearby_zipcodes_with_road_check(destination_lat, destination_lon, float(destination_radius), [])
             destination_query = destination_query.filter(postal_code__in=destination_valid_zip_codes) 
      
