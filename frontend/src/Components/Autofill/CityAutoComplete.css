@@ -1,4 +1,5 @@
 .city-input {
+  position: relative;
   top: 0px;
   width: 80%;
   padding: 8px;
@@ -8,7 +9,10 @@
 }
 
 .suggestions-list {
-  list-style-type: none;
+  position: absolute; /* Position the suggestions list absolutely */
+  top: 100%; /* Place it just below the input field */
+  left: 0;
+  width: 80%; /* Match the input width */
   margin: 0;
   padding: 0;
   background-color: white;
@@ -16,11 +20,19 @@
   border-radius: 4px;
   max-height: 200px;
   overflow-y: auto;
+  z-index: 10; /* Ensure it appears above other elements */
 }
+
 
 .suggestion-item {
   padding: 10px;
   cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+}
+
+.suggestion-item:not(:last-child) {
+  border-bottom: 2px solid #ccc;
 }
 
 .suggestion-item:hover {

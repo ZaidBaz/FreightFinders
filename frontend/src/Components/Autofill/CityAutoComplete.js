@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import './CityAutoComplete.css';
 
@@ -8,6 +8,10 @@ const CityAutoComplete = ({ onCitySelect }) => {
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const suggestionsRef = useRef(null); // Ref for the suggestions list container
+  const inputRef = useRef(null); // Ref for the input field
+
+  // Fetch cities based on the query
   const fetchCities = async (cityName) => {
     if (!cityName) {
       setSuggestions([]);
@@ -38,6 +42,26 @@ const CityAutoComplete = ({ onCitySelect }) => {
     }
   }, [query]);
 
+  // Close the suggestions list if clicked outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        suggestionsRef.current && !suggestionsRef.current.contains(event.target) &&
+        inputRef.current && !inputRef.current.contains(event.target)
+      ) {
+        setOpen(false); // Close the suggestions if clicked outside
+      }
+    };
+
+    // Add event listener for clicks outside
+    document.addEventListener('mousedown', handleClickOutside);
+
+    // Cleanup the event listener when the component is unmounted
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   const handleInputChange = (e) => {
     setQuery(e.target.value);
   };
@@ -46,21 +70,20 @@ const CityAutoComplete = ({ onCitySelect }) => {
     onCitySelect(`${city}, ${state}`); // Notify parent component
     setQuery(`${city}, ${state}`); // Set input field value
     setOpen(false); // Hide suggestions
-
   };
 
   return (
-    <div>
+    <div style={{ position: 'relative', width: '80%' }}> {/* Anchor the dropdown */}
       <input
         type="text"
         value={query}
         onFocus={() => setOpen(true)} // Show suggestions on input focus
         onChange={handleInputChange}
         className="city-input"
+        ref={inputRef} // Attach input reference
       />
-      {loading && <div>Loading...</div>}
       {open && suggestions.length > 0 && (
-        <ul className="suggestions-list">
+        <ul className="suggestions-list" ref={suggestionsRef}> {/* Attach suggestions reference */}
           {suggestions.map((suggestion, index) => (
             <li
               key={index}
