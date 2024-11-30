@@ -107,6 +107,8 @@
 
 /* Main Content styling */
 .main-content {
+  overflow: hidden;
+  max-width: 100%;
   width: 100vw; /* Full viewport width */
   min-height: 100vh;
   height: auto;
