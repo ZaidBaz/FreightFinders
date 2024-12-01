@@ -7,7 +7,6 @@ const Checkbox = ({ label, onChange }) => {
             <input
             type= "checkbox"
             onChange = {(e) => {
-                console.log('Checkbox clicked, checked:', e.target.checked); // Debug log
                 onChange(e);
             }} />
             <label>{label}</label>

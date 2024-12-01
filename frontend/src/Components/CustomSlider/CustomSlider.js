@@ -13,6 +13,7 @@ const CustomSlider = ({
   max, // Default maximum value
   step,
   defaultSliderVal,
+  inputValue, 
   setInputValue
 })  => {
 
@@ -38,10 +39,12 @@ const CustomSlider = ({
   };
 
   const handleIncrement = () => {
+    setInputValue((prev) => Math.min(prev + parseInt(step, 10), parseInt(max, 10)));
     setSliderValue((prev) => Math.min(prev + parseInt(step, 10), parseInt(max, 10)));
   };
 
   const handleDecrement = () => {
+    setInputValue((prev) => Math.max(prev - parseInt(step, 10), parseInt(min, 10)));
     setSliderValue((prev) => Math.max(prev - parseInt(step, 10), parseInt(min, 10)));
   };
 
@@ -54,7 +57,7 @@ const CustomSlider = ({
         <Box sx={{ flexGrow: 1 }}>
           <Slider
             aria-label="Distance slider"
-            value={sliderValue}
+            value={inputValue}
             onChange={handleSliderChange}
             getAriaValueText={valuetext}
             min={parseInt(min, 10)}

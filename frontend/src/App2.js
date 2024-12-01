@@ -50,7 +50,6 @@ const LoadSearch = () => {
   // Prevent form from refreshing the page
       event.preventDefault();
       // Create an object with all users inputs
-      console.log("over here");
       const searchData = {
         origin_city: origin,
         destination_city: destination,

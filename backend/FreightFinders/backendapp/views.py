@@ -9,11 +9,11 @@ from django.db.models import Max, OuterRef, Subquery, F, Q, Prefetch
 from concurrent.futures import ThreadPoolExecutor
 from .pc_miler_utils import single_search, geocode_search, reverse_geocode_search, radius_search, fetch_nearby_zipcodes_with_road_check, check_road_miles, fetch_coordinates_from_zip
 import asyncio
+import json
 
 # PC MILER VIEWS START HERE
 def single_search_view(request):
     query = request.GET.get('query', '54115')  # Default zip code as provided by PC Miler doc
-    print(query)
     data = single_search(query=query)
     return JsonResponse(data)
 
@@ -47,53 +47,113 @@ def radius_search_view(request):
     
     data = radius_search(center_lat=center_lat, center_lon=center_lon, radius=radius)
     return JsonResponse(data, safe=False)
-# PC MILER VIEWS END HERE
-
 
 def search_locations(request):
+
     # Get origin and destination input
     origin_input = request.GET.get('origin', '').lower()  
-    destination_input = request.GET.get('destination', '').lower() 
-    #origin_city_input = request.GET.get('origin_city', '').lower()
-    #origin_state_input = request.GET.get('origin_state', '').lower()
-    origin_postal_code_input = request.GET.get('origin_postal_code', '').lower()
-    #destination_city_input = request.GET.get('destination_city', '').lower()
-    #destination_state_input = request.GET.get('destination_state', '').lower()
-    destination_postal_code_input = request.GET.get('destination_postal_code', '').lower()
-     # Split the city and state input based on a comma
-    origin_city_input, origin_state_input = origin_input.split(',') if origin_input else ('', '')
-    destination_city_input, destination_state_input = destination_input.split(',') if destination_input else ('', '')
+    full_origin_input = request.GET.get('origin_full_addr', '')
+    destination_input = request.GET.get('destination', '').lower()
+    full_destination_input = request.GET.get('destination_full_addr', '')
 
     # Trim extra spaces
-    origin_city_input = origin_city_input.strip()
-    origin_state_input = origin_state_input.strip()
-    destination_city_input = destination_city_input.strip()
-    destination_state_input = destination_state_input.strip()
-
+    origin_city_input = None
+    origin_state_input = None
+    destination_city_input = None
+    destination_state_input = None
 
     #Check for origin radius and destination radius
     origin_radius = request.GET.get('origin_radius', None) 
     destination_radius = request.GET.get('destination_radius', None)
 
+    origin_zip = None
+    destination_zip = None
 
     # Check for 'anywhere' input
-    origin_anywhere = origin_city_input == "anywhere" or origin_state_input == "anywhere" or origin_postal_code_input == "anywhere"
-    destination_anywhere = destination_city_input == "anywhere" or destination_state_input == "anywhere" or destination_postal_code_input == "anywhere"
+    origin_anywhere = origin_input == "anywhere"
+    destination_anywhere = destination_input == "anywhere"
 
+    if(origin_anywhere is False and full_origin_input != 'null'):
+        
+        json_full_origin_input = json.loads(full_origin_input)
+        origin_zip = str(json_full_origin_input["Address"]["Zip"]).strip()
 
-    if origin_anywhere and destination_anywhere:
+    if(destination_anywhere is False and full_destination_input != 'null'):
+
+        json_full_destination_input = json.loads(full_destination_input)
+        destination_zip = str(json_full_destination_input["Address"]["Zip"]).strip()
+
+    if(origin_anywhere is False):
+        origin_city_input, origin_state_input = origin_input.split(',') if origin_input else ('', '')
+        origin_city_input = origin_city_input.strip()
+        origin_state_input = origin_state_input.strip()
+
+    if(destination_anywhere is False):
+        destination_city_input, destination_state_input = destination_input.split(',') if destination_input else ('', '')
+        destination_city_input = destination_city_input.strip()
+        destination_state_input = destination_state_input.strip()
+
+    if (origin_anywhere and destination_anywhere) or (origin_input == '' and destination_input == ''):
         return JsonResponse({"error": "Either destination or origin can be anywhere, but not both."}, status=400)
 
-    # Query for origin stops using Django ORM
-    origin_query = LoadStop.objects.all().filter(stop_sequence=1)
-    if not origin_anywhere:
-        if origin_city_input:
-            origin_query = origin_query.filter(city__iexact=origin_city_input)
-        if origin_state_input:
-            origin_query = origin_query.filter(state__iexact=origin_state_input)
-        if origin_postal_code_input:
-            origin_query = origin_query.filter(postal_code__iexact=origin_postal_code_input)
+    ########
 
+    if origin_anywhere or origin_input == '':
+        
+        max_sequence_subquery = (
+            LoadStop.objects
+            .filter(load_id=OuterRef('load_id'))
+            .values('load_id')
+            .annotate(max_sequence=Max('stop_sequence'))
+            .values('max_sequence'))
+
+        destination_query = (
+            LoadStop.objects
+            .annotate(max_sequence=Subquery(max_sequence_subquery))
+            .filter(stop_sequence=F('max_sequence'))
+            .defer('max_sequence')
+        )
+
+        destination_geocode = geocode_search(postcode=destination_zip)
+        if 'error' not in destination_geocode:
+            existing_destinations = (LoadStop.objects
+                .filter(Q(stop_sequence=2) | Q(stop_sequence=3) | Q(stop_sequence=4) | Q(stop_sequence=5))
+                .values('city', 'state', 'postal_code').distinct())
+            destination_lat = destination_geocode[0]['Coords']['Lat']
+            destination_lon = destination_geocode[0]['Coords']['Lon']
+            destination_valid_zip_codes = asyncio.run(fetch_nearby_zipcodes_with_road_check(destination_lat, destination_lon, float(destination_radius), {entry['postal_code'][:5] for entry in existing_destinations}))
+            destination_query = destination_query.filter(Q(postal_code__in=destination_valid_zip_codes) | ( Q(city__iexact=destination_city_input) & Q(state__iexact=destination_state_input)))
+
+        destination_data = list(destination_query.values())
+        destination_load_ids = {item['load_id'] for item in destination_data}
+        return destination_load_ids
+
+    elif destination_anywhere or destination_input == '':
+
+        origin_query = LoadStop.objects.all().filter(stop_sequence=1)
+        origin_geocode = geocode_search(postcode=origin_zip)
+        if 'error' not in origin_geocode:
+            existing_origins = LoadStop.objects.filter(stop_sequence=1).values('city', 'state', 'postal_code').distinct()
+            origin_lat = origin_geocode[0]['Coords']['Lat']
+            origin_lon = origin_geocode[0]['Coords']['Lon']
+            origin_valid_zip_codes = asyncio.run(fetch_nearby_zipcodes_with_road_check(origin_lat, origin_lon, float(origin_radius), {entry['postal_code'][:5] for entry in existing_origins}))
+            origin_query = origin_query.filter(Q(postal_code__in=origin_valid_zip_codes) | ( Q(city__iexact=origin_city_input) & Q(state__iexact=origin_state_input)))
+        
+        origin_data = list(origin_query.values())
+        origin_load_ids = {item['load_id'] for item in origin_data}
+        return origin_load_ids
+
+    origin_query = LoadStop.objects.all().filter(stop_sequence=1)
+    origin_geocode = geocode_search(postcode=origin_zip)
+    if 'error' not in origin_geocode:
+        existing_origins = LoadStop.objects.filter(stop_sequence=1).values('city', 'state', 'postal_code').distinct()
+        origin_lat = origin_geocode[0]['Coords']['Lat']
+        origin_lon = origin_geocode[0]['Coords']['Lon']
+        origin_valid_zip_codes = asyncio.run(fetch_nearby_zipcodes_with_road_check(origin_lat, origin_lon, float(origin_radius), {entry['postal_code'][:5] for entry in existing_origins}))
+        origin_query = origin_query.filter(Q(postal_code__in=origin_valid_zip_codes) | ( Q(city__iexact=origin_city_input) & Q(state__iexact=origin_state_input)))
+        
+    origin_data = list(origin_query.values())
+    origin_load_ids = {item['load_id'] for item in origin_data}
 
     max_sequence_subquery = (
         LoadStop.objects
@@ -102,7 +162,6 @@ def search_locations(request):
         .annotate(max_sequence=Max('stop_sequence'))
         .values('max_sequence'))
 
-    # Filter main LoadStop query using the subquery
     destination_query = (
         LoadStop.objects
         .annotate(max_sequence=Subquery(max_sequence_subquery))
@@ -110,52 +169,22 @@ def search_locations(request):
         .defer('max_sequence')
     )
 
-    # Query for destination stops using Django ORM
-    if not destination_anywhere:
-        if destination_city_input:
-            destination_query = destination_query.filter(city__iexact=destination_city_input)
-        if destination_state_input:
-            destination_query = destination_query.filter(state__iexact=destination_state_input)
-        if destination_postal_code_input:
-            destination_query = destination_query.filter(postal_code__iexact=destination_postal_code_input)
+    destination_geocode = geocode_search(postcode=destination_zip)
+    if 'error' not in destination_geocode:
+        existing_destinations = (LoadStop.objects
+            .filter(Q(stop_sequence=2) | Q(stop_sequence=3) | Q(stop_sequence=4) | Q(stop_sequence=5))
+            .values('city', 'state', 'postal_code').distinct())
+        destination_lat = destination_geocode[0]['Coords']['Lat']
+        destination_lon = destination_geocode[0]['Coords']['Lon']
+        destination_valid_zip_codes = asyncio.run(fetch_nearby_zipcodes_with_road_check(destination_lat, destination_lon, float(destination_radius), {entry['postal_code'][:5] for entry in existing_destinations}))
+        destination_query = destination_query.filter(Q(postal_code__in=destination_valid_zip_codes) | ( Q(city__iexact=destination_city_input) & Q(state__iexact=destination_state_input)))
 
-    # Radius-based origin location search
-    if origin_radius:
-        origin_geocode = geocode_search(postcode=origin_postal_code_input)
-        print(origin_geocode)
-        if 'error' not in origin_geocode:
-            existing_origins = LoadStop.objects.filter(stop_sequence=1).values('city', 'state', 'postal_code').distinct()
-            origin_lat = origin_geocode[0]['Coords']['Lat']
-            origin_lon = origin_geocode[0]['Coords']['Lon']
-            origin_valid_zip_codes = asyncio.run(fetch_nearby_zipcodes_with_road_check(origin_lat, origin_lon, float(origin_radius), {entry['postal_code'][:5] for entry in existing_origins}))
-            origin_valid_zip_codes.append()
-            # print(origin_valid_zip_codes)
-            # origin_valid_zip_codes = []
-            origin_query = origin_query.filter(postal_code__in=origin_valid_zip_codes)    
-
-    # Radius-based destination location search
-    if destination_radius:
-        destination_geocode = geocode_search(postcode=destination_postal_code_input)
-        if 'error' not in destination_geocode:
-            destination_lat = destination_geocode[0]['Coords']['Lat']
-            destination_lon = destination_geocode[0]['Coords']['Lon']
-            destination_valid_zip_codes = fetch_nearby_zipcodes_with_road_check(destination_lat, destination_lon, float(destination_radius), [])
-            destination_query = destination_query.filter(postal_code__in=destination_valid_zip_codes) 
-     
-    origin_data = list(origin_query.values())
     destination_data = list(destination_query.values())
-    origin_load_ids = {item['load_id'] for item in origin_data}
     destination_load_ids = {item['load_id'] for item in destination_data}
-
-    if origin_anywhere:
-        common_load_ids = destination_load_ids
-    elif destination_anywhere:
-        common_load_ids = origin_load_ids
-    else:
-        common_load_ids = origin_load_ids.intersection(destination_load_ids)
-
+    
+    common_load_ids = origin_load_ids.intersection(destination_load_ids)
     return common_load_ids
-#return JsonResponse(list(common_load_ids), safe=False)
+
 
 def search_dates(request):
     start_date_earliest = request.GET.get('earliest_start_date', '').lower()
