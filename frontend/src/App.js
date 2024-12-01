@@ -17,16 +17,17 @@ const App = () => {
   const [selectedMenuItem, setSelectedMenuItem] = useState(null);
   const [selectedCapacity, setSelectedCapacity] = useState([]);
   const [origin, setOrigin] = useState('');
+  const [origin_lat_lon_zip, setOriginLatLonZip] = useState(null);
   const [destination, setDestination] = useState('');
+  const [destination_lat_lon_zip, setDestinationLatLonZip] = useState(null);
   const [earliestPickupDate, setEarliestPickupDate] = useState('');
   const [latestPickupDate, setLatestPickupDate] = useState('');
-  const [dropoffDate, setDropoffDate] = useState('');
+  // const [dropoffDate, setDropoffDate] = useState('');
   const [destinationStartDate, setDestinationStartDate] = useState(''); // Destination start date
   const [destinationEndDate, setDestinationEndDate] = useState(''); // Destination end date
-  const [minMiles, setMinMiles] = useState('');
-  const [maxMiles, setMaxMiles] = useState('');
-  const [originRadius, setOriginRadius] = useState(250);
-  const [destinationRadius, setDestinationRadius] = useState(250);
+  const [maxMiles, setMaxMiles] = useState(100);
+  const [originRadius, setOriginRadius] = useState(25);
+  const [destinationRadius, setDestinationRadius] = useState(25);
   const [results, setResults] = useState([]); // State for search results
 
   const toggleSidebar = () => setIsSidebarVisible((prevState) => !prevState);
@@ -38,10 +39,8 @@ const App = () => {
     setDestination('');
     setEarliestPickupDate('');
     setLatestPickupDate('');
-    setDropoffDate('');
     setDestinationStartDate('');
     setDestinationEndDate('');
-    setMinMiles('');
     setMaxMiles('');
   };
 
@@ -49,15 +48,18 @@ const App = () => {
   const handleSearch = async (event) => {
     event.preventDefault();
     const searchData = {
-      origin_city: origin,
-      destination_city: destination,
+      origin: origin,
+      origin_full_addr: JSON.stringify(origin_lat_lon_zip),
+      destination: destination,
+      destination_full_addr: JSON.stringify(destination_lat_lon_zip),
       earliest_start_date: earliestPickupDate,
-      latest_start_date: dropoffDate,
-      destination_start_date: destinationStartDate,
-      destination_end_date: destinationEndDate,
+      latest_start_date: latestPickupDate,
+      earliest_end_date: destinationStartDate,
+      latest_end_date: destinationEndDate,
       transport_modes: selectedCapacity.join(','),
       origin_radius: originRadius,
       destination_radius: destinationRadius,
+      min_distance: 0,
       max_distance: maxMiles
     };
 
@@ -66,7 +68,6 @@ const App = () => {
     try {
       const response = await fetch(`http://127.0.0.1:8000/filter-loads/?${queryParams}`, { method: 'GET' });
       const result = await response.json();
-      console.log('API Response:', result); // Log the response to confirm
       setResults(result); // Set the search results
     } catch (error) {
       console.error('Errors during search from Backend:', error);
@@ -114,7 +115,7 @@ const App = () => {
             <div className="input-group">
               <div className="input-row">
                 <label htmlFor="origin" className="form-label">Origin</label>
-                <CityAutoComplete onCitySelect={(city) => setOrigin(city)} query = {origin} setQuery = {setOrigin} />
+                <CityAutoComplete query = {origin} setQuery = {setOrigin} queryLatLonZip = {origin_lat_lon_zip} setQueryLatLonZip = {setOriginLatLonZip} />
                 <Checkbox label="Anywhere" onChange={(e) => e.target.checked ? setOrigin('Anywhere') : null} style={{ marginLeft: '-10%' }} />
               </div>
               <div className="input-row-second">
@@ -134,14 +135,14 @@ const App = () => {
             </div>
 
             <div className="input-group">
-              <CustomSlider label = "Origin location radius" min = "25" max = "250" step = "25" defaultSliderVal = "25" setInputValue={setOriginRadius}/>
+              <CustomSlider label = "Origin location radius" min = "25" max = "250" step = "25" defaultSliderVal = "25" inputValue = {originRadius} setInputValue={setOriginRadius}/>
             </div>
 
             {/* Destination and Destination Date Range Group */}
             <div className="input-group">
               <div className="input-row">
                 <label htmlFor="destination" className="form-label">Destination</label>
-                <CityAutoComplete onCitySelect={(city) => setDestination(city)}  query = {destination} setQuery = {setDestination} />
+                <CityAutoComplete query = {destination} setQuery = {setDestination} queryLatLonZip = {destination_lat_lon_zip} setQueryLatLonZip = {setDestinationLatLonZip}/>
                 <Checkbox label="Anywhere" onChange={(e) => e.target.checked ? setDestination('Anywhere') : null} />
               </div>
               <div className="input-row-second">
@@ -165,7 +166,7 @@ const App = () => {
 
 
             <div className="input-group">
-              <CustomSlider label = "Drop off location radius" min = "25" max = "250" step = "25" defaultSliderVal = "25" setInputValue={setDestinationRadius}/> 
+              <CustomSlider label = "Drop off location radius" min = "25" max = "250" step = "25" defaultSliderVal = "25" inputValue = {destinationRadius} setInputValue={setDestinationRadius}/> 
             </div>
 
             <div className = "input-group">
@@ -175,7 +176,7 @@ const App = () => {
             </div>
 
             <div className = "input-group">
-              <CustomSlider min = "100" max = "1000" step = "100" defaultSliderVal = "100" setInputValue={setMaxMiles}/>
+              <CustomSlider min = "100" max = "1000" step = "100" defaultSliderVal = "100" inputValue = {maxMiles} setInputValue={setMaxMiles}/>
             </div>
 
             <div className="button-container-2">
