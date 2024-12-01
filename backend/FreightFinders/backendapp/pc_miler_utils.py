@@ -124,7 +124,6 @@ async def fetch_route_distance(session, origin_lat, origin_lon, dest_lat, dest_l
         if response.status == 200:
             try:
                 data = await response.json()
-                print(data)
                 if data and 'TMiles' in data[0] and data[0]['TMiles'] < radius:
                     async with lock:
                         result_list.append(zip)
@@ -155,23 +154,6 @@ async def fetch_nearby_zipcodes_with_road_check(lat, lon, radius, valid_zip_code
     for item in filtered_results)
 
     valid_zip_codes_with_road_miles = []
-
-    # for location in unique_zip_coords:
-
-    #     ##############
-
-    #     stops = f"{lon},{lat};{location[2]},{location[1]}"
-    #     params = {
-    #         'authToken': settings.PC_MILER_API_KEY,
-    #         'stops': stops,
-    #         'reports': 'CalcMiles'
-    #     }
-    #     response = requests.get(BASE_ROUTE_DISTANCE_URL, params=params)
-    #     response = handle_response(response)
-
-    #     ############
-
-    #     print(road_distance_result[0]['TMiles'])
         
     lock = asyncio.Lock()  # Lock to manage access to the shared list
 
@@ -183,90 +165,3 @@ async def fetch_nearby_zipcodes_with_road_check(lat, lon, radius, valid_zip_code
         await asyncio.gather(*tasks)
 
     return valid_zip_codes_with_road_miles
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Function to fetch nearby zip codes with road miles check
-# def fetch_nearby_zipcodes_with_road_check(lat, lon, radius, valid_zip_codes):
-#     """
-#     Fetch nearby zip codes within the given radius and validate them using road miles.
-#     :param lat: Latitude of the center location.
-#     :param lon: Longitude of the center location.
-#     :param radius: Radius to search within (in miles).
-#     :param valid_zip_codes: List of zip codes to validate.
-#     :return: List of valid zip codes within the radius and with valid road miles.
-#     """
-#     # Fetch nearby locations based on air miles search.
-#     air_mile_results = radius_search(lat, lon, radius)
-#     if 'error' in air_mile_results:
-#         return []
-
-#     filtered_results = list(filter(lambda x: x['POILocation']['Address']['Zip'][:5] in valid_zip_codes, air_mile_results))
-#     valid_zip_codes_with_road_miles = []
-
-#     print(filtered_results)
-
-#     for location in filtered_results:
-
-#         destination_coords = location['POILocation']['Coords']
-
-
-#         road_distance_result = check_road_miles(lat, lon, destination_coords['Lat'], destination_coords['Lon'])
-#         print(road_distance_result)
-
-#         # if(radius >= 100):
-            
-#         #     if(zip_code != '' and zip_code[:3] in visited):
-#         #         visited[zip_code[:3]].append((zip_code, destination_coords))
-#         #     elif(zip_code != ''):
-#         #         visited[zip_code[:3]] = [(zip_code, destination_coords)]
-
-#         # else:
-            
-#         #     if(zip_code != '' and zip_code[:4] in visited):
-#         #         visited[zip_code[:4]].append((zip_code, destination_coords))
-#         #     elif(zip_code != ''):
-#         #         visited[zip_code[:4]] = [(zip_code, destination_coords)]
-
-
-#     # for zip_group in visited:
-#     #     num_zips_in_group = len(visited[zip_group])
-#     #     random_zip = random.randint(0, num_zips_in_group - 1)
-
-#     #     road_distance_result = check_road_miles(lat, lon, visited[zip_group][random_zip][1]['Lat'], visited[zip_group][random_zip][1]['Lon'])
-#         # print(random_number)
-#     # print(visited)
-
-#     # for location in air_mile_results:
-#     #     zip_code = location['POILocation']['Address']['Zip']
-#     #     destination_coords = location['POILocation']['Coords']
-#     #     # destination_coords = fetch_coordinates_from_zip(zip_code)
-#     #     if destination_coords:
-#     #         # print(lat, lon)
-#     #         # print(destination_coords['Lat'], destination_coords['Lon'])
-#     #         # Calculate the road miles between the origin and destination coordinates
-#     #         road_distance_result = check_road_miles(lat, lon, destination_coords['Lat'], destination_coords['Lon'])
-#     #         # print(road_distance_result)
-#     #         if(counter > 1):
-#     #             break
-#     #         counter+= 1
-#     #         # print(counter)
-#     #         # if 'CalcMiles' in road_distance_result:
-#     #         #     road_miles = road_distance_result['CalcMiles']
-#     #         #     if road_miles <= radius:
-#     #         #         valid_zip_codes_with_road_miles.append(zip_code)
-    
-#     print("DONE")
-#     return valid_zip_codes_with_road_miles
