@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import './CityAutoComplete.css';
 
-const CityAutoComplete = ({ onCitySelect }) => {
-  const [query, setQuery] = useState('');
+const CityAutoComplete = ({ onCitySelect, query, setQuery }) => {
+  // const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -21,6 +21,7 @@ const CityAutoComplete = ({ onCitySelect }) => {
     setLoading(true);
     try {
       const response = await axios.get(`http://127.0.0.1:8000/single-search/?query=${cityName}`);
+      console.log(response);
       const cities = response.data.Locations.map((location) => ({
         city: location.Address.City,
         state: location.Address.StateName,
@@ -73,7 +74,7 @@ const CityAutoComplete = ({ onCitySelect }) => {
   };
 
   return (
-    <div style={{ position: 'relative', width: '80%' }}> {/* Anchor the dropdown */}
+    <div style={{ position: 'relative', width: '50%' }}> {/* Anchor the dropdown */}
       <input
         type="text"
         value={query}
