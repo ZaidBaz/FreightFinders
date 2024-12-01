@@ -8,11 +8,12 @@ from .models import LoadStop, LoadPosting
 from django.db.models import Max, OuterRef, Subquery, F, Q, Prefetch
 from concurrent.futures import ThreadPoolExecutor
 from .pc_miler_utils import single_search, geocode_search, reverse_geocode_search, radius_search, fetch_nearby_zipcodes_with_road_check, check_road_miles, fetch_coordinates_from_zip
-
+import asyncio
 
 # PC MILER VIEWS START HERE
 def single_search_view(request):
     query = request.GET.get('query', '54115')  # Default zip code as provided by PC Miler doc
+    print(query)
     data = single_search(query=query)
     return JsonResponse(data)
 
@@ -121,11 +122,15 @@ def search_locations(request):
     # Radius-based origin location search
     if origin_radius:
         origin_geocode = geocode_search(postcode=origin_postal_code_input)
+        print(origin_geocode)
         if 'error' not in origin_geocode:
             existing_origins = LoadStop.objects.filter(stop_sequence=1).values('city', 'state', 'postal_code').distinct()
             origin_lat = origin_geocode[0]['Coords']['Lat']
             origin_lon = origin_geocode[0]['Coords']['Lon']
-            origin_valid_zip_codes = fetch_nearby_zipcodes_with_road_check(origin_lat, origin_lon, float(origin_radius), {entry['postal_code'][:5] for entry in existing_origins})
+            origin_valid_zip_codes = asyncio.run(fetch_nearby_zipcodes_with_road_check(origin_lat, origin_lon, float(origin_radius), {entry['postal_code'][:5] for entry in existing_origins}))
+            origin_valid_zip_codes.append()
+            # print(origin_valid_zip_codes)
+            # origin_valid_zip_codes = []
             origin_query = origin_query.filter(postal_code__in=origin_valid_zip_codes)    
 
     # Radius-based destination location search
@@ -141,8 +146,6 @@ def search_locations(request):
     destination_data = list(destination_query.values())
     origin_load_ids = {item['load_id'] for item in origin_data}
     destination_load_ids = {item['load_id'] for item in destination_data}
-
-                    
 
     if origin_anywhere:
         common_load_ids = destination_load_ids

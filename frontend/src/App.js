@@ -114,8 +114,8 @@ const App = () => {
             <div className="input-group">
               <div className="input-row">
                 <label htmlFor="origin" className="form-label">Origin</label>
-                <CityAutoComplete onCitySelect={(city) => setOrigin(city)} />
-                <Checkbox label="Anywhere" onClick={(e) => e.target.checked ? setOrigin('Anywhere') : null} />
+                <CityAutoComplete onCitySelect={(city) => setOrigin(city)} query = {origin} setQuery = {setOrigin} />
+                <Checkbox label="Anywhere" onChange={(e) => e.target.checked ? setOrigin('Anywhere') : null} style={{ marginLeft: '-10%' }} />
               </div>
               <div className="input-row-second">
                 <input
@@ -141,8 +141,8 @@ const App = () => {
             <div className="input-group">
               <div className="input-row">
                 <label htmlFor="destination" className="form-label">Destination</label>
-                <CityAutoComplete onCitySelect={(city) => setDestination(city)} />
-                <Checkbox label="Anywhere" onClick={(e) => e.target.checked ? setDestination('Anywhere') : null} />
+                <CityAutoComplete onCitySelect={(city) => setDestination(city)}  query = {destination} setQuery = {setDestination} />
+                <Checkbox label="Anywhere" onChange={(e) => e.target.checked ? setDestination('Anywhere') : null} />
               </div>
               <div className="input-row-second">
                 <input
