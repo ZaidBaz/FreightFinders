@@ -7,9 +7,9 @@ import LeftSidebar from './Components/LeftSidebar/LeftSidebar.js';
 import Dropdown from './Components/Dropdown/Dropdown.js';
 import Card from './Components/Card';
 import Checkbox from './Components/Checkbox/Checkbox';
-import RadiusSlider from './Components/RadiusSlider/RadiusSlider';
 import CustomSlider from './Components/CustomSlider/CustomSlider';
 import CityAutoComplete from './Components/Autofill/CityAutoComplete';
+import ClearButton from './Components/ClearButton/ClearButton';
 
 const App = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
@@ -22,28 +22,47 @@ const App = () => {
   const [destination_lat_lon_zip, setDestinationLatLonZip] = useState(null);
   const [earliestPickupDate, setEarliestPickupDate] = useState('');
   const [latestPickupDate, setLatestPickupDate] = useState('');
-  // const [dropoffDate, setDropoffDate] = useState('');
-  const [destinationStartDate, setDestinationStartDate] = useState(''); // Destination start date
-  const [destinationEndDate, setDestinationEndDate] = useState(''); // Destination end date
+  const [destinationStartDate, setDestinationStartDate] = useState('');
+  const [destinationEndDate, setDestinationEndDate] = useState('');
   const [maxMiles, setMaxMiles] = useState(100);
   const [originRadius, setOriginRadius] = useState(25);
   const [destinationRadius, setDestinationRadius] = useState(25);
-  const [results, setResults] = useState([]); // State for search results
+  const [results, setResults] = useState([]);
+
+  // **Added state variables for the checkboxes**
+  const [originAnywhereChecked, setOriginAnywhereChecked] = useState(false);
+  const [destinationAnywhereChecked, setDestinationAnywhereChecked] = useState(false);
 
   const toggleSidebar = () => setIsSidebarVisible((prevState) => !prevState);
   const handleButtonClick = (buttonIndex) => setActiveButton(buttonIndex);
 
-  const handleClear = () => {
-    setSelectedCapacity([]);
+  // Clear functions
+  const clearCapacityTypes = () => setSelectedCapacity([]);
+
+  const clearOrigin = () => {
     setOrigin('');
-    setDestination('');
+    setOriginLatLonZip(null);
     setEarliestPickupDate('');
     setLatestPickupDate('');
-    setDestinationStartDate('');
-    setDestinationEndDate('');
-    setMaxMiles('');
+    setOriginRadius(25);
+    setOriginAnywhereChecked(false); // Reset the origin checkbox
   };
 
+  const clearDestination = () => {
+    setDestination('');
+    setDestinationLatLonZip(null);
+    setDestinationStartDate('');
+    setDestinationEndDate('');
+    setDestinationRadius(25);
+    setDestinationAnywhereChecked(false); // Reset the destination checkbox
+  };
+
+  const handleClear = () => {
+    clearCapacityTypes();
+    clearOrigin();
+    clearDestination();
+    setMaxMiles(100);
+  };
 
   const handleSearch = async (event) => {
     event.preventDefault();
@@ -68,7 +87,7 @@ const App = () => {
     try {
       const response = await fetch(`http://127.0.0.1:8000/filter-loads/?${queryParams}`, { method: 'GET' });
       const result = await response.json();
-      setResults(result); // Set the search results
+      setResults(result);
     } catch (error) {
       console.error('Errors during search from Backend:', error);
     }
@@ -103,20 +122,44 @@ const App = () => {
           <Card loadId="1000534120" transportMode="Power Only" originCity="MILWAUKEE, WI" destinationCity="CHICAGO, IL" totalDistance="94" totalWeight="25000" />
         </div>
 
-        <div className = "search-results-wrapper">
+        <div className="search-results-wrapper">
           {/* Search Filter and Results Section */}
           <div className="search-filter-container">
+            {/* Capacity Type Section */}
             <div className="dropdown-container">
-              <h3 className="dropdown-title">Capacity Type</h3>
+              <div className="section-header">
+                <h3 className="dropdown-title">Capacity Type</h3>
+                <ClearButton onClick={clearCapacityTypes} label="Reset" />
+              </div>
               <Dropdown setSelectedCapacity={setSelectedCapacity} selectedCapacity={selectedCapacity} />
             </div>
 
             {/* Origin and Pickup Date Group */}
             <div className="input-group">
-              <div className="input-row">
+              <div className="section-header">
                 <label htmlFor="origin" className="form-label">Origin</label>
-                <CityAutoComplete query = {origin} setQuery = {setOrigin} queryLatLonZip = {origin_lat_lon_zip} setQueryLatLonZip = {setOriginLatLonZip} />
-                <Checkbox label="Anywhere" onChange={(e) => e.target.checked ? setOrigin('Anywhere') : null} style={{ marginLeft: '-10%' }} />
+                <ClearButton onClick={clearOrigin} label="Reset" />
+              </div>
+              <div className="input-row">
+                <CityAutoComplete
+                  query={origin}
+                  setQuery={setOrigin}
+                  queryLatLonZip={origin_lat_lon_zip}
+                  setQueryLatLonZip={setOriginLatLonZip}
+                />
+                <Checkbox
+                  label="Anywhere"
+                  checked={originAnywhereChecked} // Bind checked state
+                  onChange={(e) => {
+                    setOriginAnywhereChecked(e.target.checked);
+                    if (e.target.checked) {
+                      setOrigin('Anywhere');
+                      setOriginLatLonZip(null);
+                    } else {
+                      setOrigin('');
+                    }
+                  }}
+                />
               </div>
               <div className="input-row-second">
                 <input
@@ -135,15 +178,43 @@ const App = () => {
             </div>
 
             <div className="input-group">
-              <CustomSlider label = "Origin location radius" min = "25" max = "250" step = "25" defaultSliderVal = "25" inputValue = {originRadius} setInputValue={setOriginRadius}/>
+              <CustomSlider
+                label="Origin location radius"
+                min="25"
+                max="250"
+                step="25"
+                defaultSliderVal="25"
+                inputValue={originRadius}
+                setInputValue={setOriginRadius}
+              />
             </div>
 
             {/* Destination and Destination Date Range Group */}
             <div className="input-group">
-              <div className="input-row">
+              <div className="section-header">
                 <label htmlFor="destination" className="form-label">Destination</label>
-                <CityAutoComplete query = {destination} setQuery = {setDestination} queryLatLonZip = {destination_lat_lon_zip} setQueryLatLonZip = {setDestinationLatLonZip}/>
-                <Checkbox label="Anywhere" onChange={(e) => e.target.checked ? setDestination('Anywhere') : null} />
+                <ClearButton onClick={clearDestination} label="Reset" />
+              </div>
+              <div className="input-row">
+                <CityAutoComplete
+                  query={destination}
+                  setQuery={setDestination}
+                  queryLatLonZip={destination_lat_lon_zip}
+                  setQueryLatLonZip={setDestinationLatLonZip}
+                />
+                <Checkbox
+                  label="Anywhere"
+                  checked={destinationAnywhereChecked} // Bind checked state
+                  onChange={(e) => {
+                    setDestinationAnywhereChecked(e.target.checked);
+                    if (e.target.checked) {
+                      setDestination('Anywhere');
+                      setDestinationLatLonZip(null);
+                    } else {
+                      setDestination('');
+                    }
+                  }}
+                />
               </div>
               <div className="input-row-second">
                 <input
@@ -163,20 +234,36 @@ const App = () => {
               </div>
             </div>
 
-
-
             <div className="input-group">
-              <CustomSlider label = "Drop off location radius" min = "25" max = "250" step = "25" defaultSliderVal = "25" inputValue = {destinationRadius} setInputValue={setDestinationRadius}/> 
+              <CustomSlider
+                label="Drop off location radius"
+                min="25"
+                max="250"
+                step="25"
+                defaultSliderVal="25"
+                inputValue={destinationRadius}
+                setInputValue={setDestinationRadius}
+              /> 
             </div>
 
-            <div className = "input-group">
-              <div className = "input-row">
-                <label htmlFor = "distance" className = "form-label">Miles to be travelled</label>
+            {/* Miles to be travelled Section */}
+            <div className="input-group">
+              <div className="section-header">
+                <label htmlFor="distance" className="form-label">Miles to be travelled</label>
+                {/* Optional: Add a reset button if needed */}
+                {/* <ClearButton onClick={() => setMaxMiles(100)} label="Reset" /> */}
               </div>
             </div>
 
-            <div className = "input-group">
-              <CustomSlider min = "100" max = "1000" step = "100" defaultSliderVal = "100" inputValue = {maxMiles} setInputValue={setMaxMiles}/>
+            <div className="input-group">
+              <CustomSlider
+                min="100"
+                max="1000"
+                step="100"
+                defaultSliderVal="100"
+                inputValue={maxMiles}
+                setInputValue={setMaxMiles}
+              />
             </div>
 
             <div className="button-container-2">
@@ -184,7 +271,7 @@ const App = () => {
             </div>
           </div>
 
-            {/* Search Results Section */}
+          {/* Search Results Section */}
           <div className="results-section">
             <h2>Search Results</h2>
             <div className="results-card-container">
@@ -206,7 +293,6 @@ const App = () => {
             </div>
           </div>
         </div>
-        {/* </div> */}
       </div>
     </div>
   );
