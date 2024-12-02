@@ -388,6 +388,25 @@ input[type="date"] {
   padding: 5px;
 }
 
+.input-group-other {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0px; /* Spacing between the input groups */
+}
+
+.input-group-other label {
+  flex: 0 0 150px;
+  margin-right: 9.25%;
+}
+
+.input-group-other input {
+  flex: 1;
+  margin-right: 05px; /* Add some space between input fields */
+  margin-left: 20px;
+  padding: 5px;
+}
+
+
 .miles-section h2 {
   font-size: 1.5rem;
   font-weight: bold;
@@ -398,7 +417,6 @@ input[type="date"] {
 .input-row {
   flex: 5;
   display: flex;
-  justify-content: flex-end;
   align-items: left;
   margin-bottom: 05px;
   white-space: nowrap; 
@@ -434,6 +452,7 @@ input[type="date"] {
   font-size: 24px;
   font-weight: bold;
 }
+
 
 .dynamic-card-container {
   display: flex;

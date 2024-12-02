@@ -126,21 +126,19 @@ const App = () => {
           {/* Search Filter and Results Section */}
           <div className="search-filter-container">
             {/* Capacity Type Section */}
-            <div className="dropdown-container">
-              <div className="section-header">
-                <h3 className="dropdown-title">Capacity Type</h3>
+            <div class = "input-group-other">
+              <div className="input-row">
+                <label className="form-label">Capacity Type</label>
                 <ClearButton onClick={clearCapacityTypes} label="Reset" />
+                <Dropdown setSelectedCapacity={setSelectedCapacity} selectedCapacity={selectedCapacity} />
               </div>
-              <Dropdown setSelectedCapacity={setSelectedCapacity} selectedCapacity={selectedCapacity} />
             </div>
 
             {/* Origin and Pickup Date Group */}
             <div className="input-group">
-              <div className="section-header">
+              <div className="input-row">
                 <label htmlFor="origin" className="form-label">Origin</label>
                 <ClearButton onClick={clearOrigin} label="Reset" />
-              </div>
-              <div className="input-row">
                 <CityAutoComplete
                   query={origin}
                   setQuery={setOrigin}
@@ -191,11 +189,9 @@ const App = () => {
 
             {/* Destination and Destination Date Range Group */}
             <div className="input-group">
-              <div className="section-header">
+              <div className="input-row">
                 <label htmlFor="destination" className="form-label">Destination</label>
                 <ClearButton onClick={clearDestination} label="Reset" />
-              </div>
-              <div className="input-row">
                 <CityAutoComplete
                   query={destination}
                   setQuery={setDestination}
