@@ -126,7 +126,7 @@ const App = () => {
           {/* Search Filter and Results Section */}
           <div className="search-filter-container">
             {/* Capacity Type Section */}
-            <div class = "input-group-other">
+            <div className = "input-group-other">
               <div className="input-row">
                 <label className="form-label">Capacity Type</label>
                 <ClearButton onClick={clearCapacityTypes} label="Reset" />
