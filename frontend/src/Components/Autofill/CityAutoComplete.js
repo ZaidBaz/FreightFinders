@@ -9,6 +9,7 @@ const CityAutoComplete = ({ query, setQuery, queryLatLonZip, setQueryLatLonZip }
 
   const suggestionsRef = useRef(null);
   const inputRef = useRef(null);
+  const abortControllerRef = useRef(null); // Use a ref to store the AbortController
 
   const fetchCities = async (cityName) => {
     if (!cityName) {
@@ -17,12 +18,28 @@ const CityAutoComplete = ({ query, setQuery, queryLatLonZip, setQueryLatLonZip }
     }
 
     setLoading(true);
+
+    // Cancel the previous request if it exists
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    // Create a new AbortController for the current request
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+
     try {
-      const response = await axios.get(`http://127.0.0.1:8000/single-search/?query=${cityName}`);
-      // Store the full location object
+      const response = await axios.get(
+        `http://127.0.0.1:8000/single-search/?query=${cityName}`,
+        { signal: abortController.signal }
+      );
       setSuggestions(response.data.Locations);
     } catch (error) {
-      console.error('Error fetching cities:', error);
+      if (axios.isCancel(error)) {
+        console.log('Request canceled:', error.message);
+      } else {
+        console.error('Error fetching cities:', error);
+      }
       setSuggestions([]);
     } finally {
       setLoading(false);
