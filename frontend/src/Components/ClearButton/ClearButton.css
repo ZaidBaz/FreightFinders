@@ -1,0 +1,16 @@
+.reset-button {
+    background: none;
+    color: #000000; /* Schneider orange */
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+    text-decoration: none;
+    margin-left: 10px; /* Align it properly with the label */
+    text-decoration: underline;
+  }
+  
+  .reset-button:hover {
+    text-decoration: underline;
+  }
+  
