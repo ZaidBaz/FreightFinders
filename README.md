@@ -1,18 +1,18 @@
 # FreightFinders (Schneider Team 1)
+## Repository Link
+https://github.com/ZaidBaz/FreightFinders
 ## Overview
 ### Goal
 Our project aimed to optimize the Schneider FreightPower search engine to enhance its usability, improve its responsiveness, and address user frustrations. By addressing common challenges faced by independent truckers, Schneider-contracted truckers, and dispatchers using the platform, we successfully implemented several features to streamline the search experience.
 
 ### Users
 The search engine is designed for:
-
-<ul>
 - Independent truckers<br>
 - Truckers contracted with Schneider<br>
 - Dispatchers or companies looking to book transportation loads
-</ul>
 
-## User frusturations and solutions
+
+## User Frustrations and Solutions
 1. ###  Miles to be Traveled<br>
 <b>Problem:</b> No option to input the desired travel distance for a single session.<br> 
 <b>Solution: </b>Implemented a "Miles to be Traveled" slider, enabling users to specify their travel range, ranging from 25 to 1000 miles.<br>
@@ -44,9 +44,13 @@ The search engine is designed for:
 <b>Impact:</b> Reduced execution time for search results, providing a much faster experience.
 
 ## Tech Stack
-Overall, in terms of the tech stack, we used React for the frontend as it enabled us to create an interactive, user-friendly interface with responsive design principles. We also used Django for the backend framework due to its seamless integration with Python, which was our preferred programming language. We also used PC Miler for fetching the location data accurately.
+Frontend: React <br>
+Backend: Django <br>
+Mapping API: PC Miler  <br>
 
-#### Backend Code HIghlights
+We chose React for the frontend due to its ability to create an interactive, user-friendly interface with responsive design principles. Django was selected for the backend framework because of its seamless integration with Python. For accurate geographic data, we utilized PC Miler.
+
+#### Backend Code Highlights
  1. Single Search View: Enables retrieving details for a single location using PC Miler.
  2. Radius Search: 
 Filters results based on a user-specified radius around a geographic location.
@@ -57,18 +61,40 @@ Supports multi-selection of transport modes to filter results.
 5. Complex Query Handling: 
 Combines location, date, and capacity filters efficiently using Python’s ThreadPoolExecutor.
 
-## Running the project
+## Setup  Steps
 
-Split terminal into 2 sessions. In the main directory and in both the terminals, run <br>
-`source venv/bin/activate`
-<br>
+### 1. Clone the Repository:
+`git clone https://github.com/ZaidBaz/FreightFinders.git` <br>
+Navigate to the project directory: `cd FreightFinders`
+### 2. Set Up Virtual Environment:
+Split the terminal into two sessions. In both terminal sessions, activate the virtual environment after navigating to the main project directory with:
+<br>`source venv/bin/activate` 
+### 3. Frontend Setup:
+- Navigate to the frontend directory:  `cd frontend` <br>
+- Install dependencies: `npm install`
+- Start the development server: `npm start`
+### 4. Backend Setup:
+- Navigate to the backend directory: `cd backend/FreightFinders`
+- Install Python dependencies: `pip install -r requirements.txt`
+- Apply database migrations: `python manage.py migrate`
+- Start the backend server: `python manage.py runserver`
 
-<b>Frontend Setup</b>: in terminal 1, navigate to the frontend directory and run `npm start`
-<br>
-<b>Backend Setup</b>: In terminal 2, navigate to the backend directory and run <br>
-`pip install -r requirements.txt` <br>
-`python manage.py migrate` <br>
-`python manage.py runserver` <br>
+## What Works & What Doesn’t
+### What Works
+- Miles to be Traveled slider, allowing users to specify travel ranges.
+- Improved search accessibility by moving recommendations to a dedicated section.
+- Multi-selection of capacity types for a more streamlined search process.
+- Filter optimizations for faster query execution using asynchronous programming.
+
+### What Doesn’t Work
+While all implemented features work as intended, there are additional enhancements that could improve the user experience in future iterations.
+
+## What We’d Work on Next
+- Mobile Optimization: Ensure the platform is fully optimized for mobile devices to cater to truckers on the go.
+Advanced Filtering 
+- Options: Add advanced filters, such as weight capacity.
+- Radius sliders: For now, the radius for origin, destination and miles to be travelled allows the user to set a maximum distance. It would be helpful to enable them to set a minimum distance simultaneously.
+
 
 
 ## Contributors
